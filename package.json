@@ -22,7 +22,7 @@
     "@mui/icons-material": "^5.0.3",
     "@mui/material": "^5.2.8",
     "@mui/styles": "^5.2.3",
-    "@react-three/drei": "^8.4.0",
+    "@react-three/drei": "^7.19.2",
     "@react-three/fiber": "^7.0.24",
     "next": "^12.0.8",
     "react": "^17.0.2",

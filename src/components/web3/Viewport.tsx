@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Loader, OrbitControls } from "@react-three/drei";
+import { Model } from "./Model";
 
 export const Viewport = (): JSX.Element => {
   return (
@@ -10,10 +11,7 @@ export const Viewport = (): JSX.Element => {
           <ambientLight />
           <pointLight position={[10, 10, 10]} />
           <OrbitControls />
-          <mesh>
-            <boxGeometry args={[1, 1, 1]} />
-            <meshBasicMaterial wireframe />
-          </mesh>
+          <Model />
         </Suspense>
       </Canvas>
       <Loader />

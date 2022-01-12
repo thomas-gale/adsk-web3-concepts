@@ -1,0 +1,17 @@
+{
+  "plugins": [
+    "@typescript-eslint",
+    "prettier",
+    "@emotion"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "next/core-web-vitals"
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "@emotion/jsx-import": "error"
+  }
+}

@@ -49,20 +49,18 @@ export const Viewer = ({
   return (
     <div
       style={{
-        position: "absolute",
+        position: "relative",
+        minHeight: "400px",
         width: "100%",
         height: "100%",
         overflow: "hidden",
       }}
     >
       <div
-        style={{
-          margin: 0,
-          width: "100%",
-          height: "100%",
-        }}
+        style={{ width: "100%", height: "100%", margin: 0 }}
         ref={viewerDivRef}
       />
+      ;
     </div>
   );
 };

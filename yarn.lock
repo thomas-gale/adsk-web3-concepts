@@ -3192,6 +3192,11 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
+three@^0.71.0:
+  version "0.71.1"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.71.1.tgz#9010c7d2ab7ff3300216e5ff20b2ae6dd403fd7b"
+  integrity sha1-kBDH0qt/8zACFuX/ILKubdQD/Xs=
+
 throttle-debounce@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/throttle-debounce/-/throttle-debounce-3.0.1.tgz#32f94d84dfa894f786c9a1f290e7a645b6a19abb"

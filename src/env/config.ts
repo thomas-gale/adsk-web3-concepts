@@ -1,7 +1,7 @@
 export const config = {
   appName: "web3 concepts",
   icon: "/autodesk-logo-primary-rgb-white.svg",
- api: {
+  api: {
     forge: {
       auth: {
         tokenURI: "https://developer.api.autodesk.com/authentication/v2/token",
@@ -18,8 +18,7 @@ export const config = {
         script:
           "https://developer.api.autodesk.com/modelderivative/v2/viewers/7.55.1/viewer3D.min.js",
         examples: {
-          shaverSVF:
-            "https://developer-autodesk.github.io/translated-models/shaver/0.svf",
+          gearboxGltf: "/examples/GearboxAssy.gltf",
         },
       },
       translation: {
@@ -27,6 +26,6 @@ export const config = {
           "https://developer.api.autodesk.com/modelderivative/v2/designdata",
         pollInterval: 1000,
       },
-    }
-  }
+    },
+  },
 };

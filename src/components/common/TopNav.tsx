@@ -2,7 +2,6 @@ import React from "react";
 import Image from "next/image";
 import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 import { config } from "../../env/config";
-// import { Session } from "next-auth";
 import { Identity } from "./Identity";
 import { Session } from "../../types/web3/Session";
 
@@ -14,7 +13,7 @@ export const TopNav = (props: TopNavProps): JSX.Element => {
   const { session } = props;
 
   return (
-    <Box>
+    <Box component="div">
       <AppBar position="static">
         <Toolbar>
           <Image

@@ -118,6 +118,3 @@ dist
 
 # local env
 .env*
-
-# Storybook build
-/storybook-static

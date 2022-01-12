@@ -13,7 +13,7 @@ export const TopNav = (props: TopNavProps): JSX.Element => {
   const { session } = props;
 
   return (
-    <Box component="div">
+    <Box>
       <AppBar position="static">
         <Toolbar>
           <Image

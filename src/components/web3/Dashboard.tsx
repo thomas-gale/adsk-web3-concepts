@@ -4,8 +4,8 @@ import { Viewport } from "./Viewport";
 
 export const Dashboard = (): JSX.Element => {
   return (
-    <Box component="div" sx={{ display: "flex", flexDirection: "column" }}>
-      <Box component="div" sx={{ p: 1, m: 1 }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Box sx={{ p: 1, m: 1 }}>
         <p>
           Hello Web3
           <ul>
@@ -16,7 +16,7 @@ export const Dashboard = (): JSX.Element => {
           </ul>
         </p>
       </Box>
-      <Box component="div" sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1 }}>
         <Viewport />
       </Box>
     </Box>

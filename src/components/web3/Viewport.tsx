@@ -12,7 +12,7 @@ export const Viewport = (): JSX.Element => {
           <OrbitControls />
           <mesh>
             <boxGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial />
+            <meshBasicMaterial wireframe />
           </mesh>
         </Suspense>
       </Canvas>

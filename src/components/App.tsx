@@ -11,7 +11,6 @@ export const App = (): JSX.Element => {
 
   return (
     <Box
-      component="div"
       style={{
         margin: 0,
         height: "100vh",

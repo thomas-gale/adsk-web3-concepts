@@ -9,8 +9,6 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "test": "jest",
-    "test:ci": "jest --ci --watchAll=false",
     "lint": "next lint",
     "lint:fix": "next lint --fix"
   },
@@ -38,7 +36,8 @@
     "@types/node": "^16.11.6",
     "@types/react": "^17.0.13",
     "@types/react-dom": "^17.0.9",
-    "@typescript-eslint/eslint-plugin": "^5.9.1",
+    "@types/three": "^0.136.1",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
     "eslint": "7",
     "eslint-config-next": "12.0.1",
     "eslint-config-prettier": "7.2.0",

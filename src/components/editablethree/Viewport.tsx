@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Loader, OrbitControls } from "@react-three/drei";
-import { Model } from "./Model";
+import { Editor } from "./Editor";
 
 export const Viewport = (): JSX.Element => {
   return (
@@ -10,8 +10,7 @@ export const Viewport = (): JSX.Element => {
         <Suspense fallback={null}>
           <ambientLight />
           <pointLight position={[10, 10, 10]} />
-          <OrbitControls />
-          <Model />
+          <Editor />
         </Suspense>
       </Canvas>
       <Loader />

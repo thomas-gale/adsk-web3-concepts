@@ -40,7 +40,9 @@ export const Dashboard = (): JSX.Element => {
           </Box>
           <Box>
             Gearbox data (currently un-encrypted) stored on IPFS through{" "}
-            <a href={config.api.forge.viewer.examples.gearboxGltf}>gateway</a>
+            <a href="https://gateway.pinata.cloud/ipfs/Qmaz3RP6BVNNJVPvEFSRjpXyGx6cxwFHHyJUKtX8Ue4r2b">
+              gateway
+            </a>
             <Button sx={{ m: 1 }} variant="outlined" onClick={loadModel}>
               Load Model
             </Button>

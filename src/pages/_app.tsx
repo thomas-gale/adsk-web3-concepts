@@ -5,7 +5,7 @@ import { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { config } from "../env/config";
 import { useState } from "react";
-import { TopNav } from "../components/common/TopNav";
+import { TopNav } from "../components/elements/TopNav";
 import { Session } from "../types/web3/Session";
 import "@hig/fonts/build/ArtifaktElement.css";
 import "../styles/globals.css";
@@ -26,7 +26,9 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
           <div className="flex-shrink">
             <TopNav session={session} />
           </div>
-          <div>{session && <Component {...pageProps} />}</div>
+          <div className="bg-light h-full">
+            {session && <Component {...pageProps} />}
+          </div>
         </div>
       </QueryClientProvider>
     </>

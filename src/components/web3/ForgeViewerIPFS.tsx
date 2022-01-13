@@ -30,19 +30,19 @@ export const ForgeViewerIPFS = (): JSX.Element => {
 
   return (
     <ViewingContextProvider options={{ env: "Local" }}>
-      <div className="flex flex-col">
+      <div className="flex flex-col h-full">
         <div className="p-1 m-1">
           <div>
             Gearbox data (currently un-encrypted) stored on IPFS through{" "}
             <a href="https://gateway.pinata.cloud/ipfs/Qmaz3RP6BVNNJVPvEFSRjpXyGx6cxwFHHyJUKtX8Ue4r2b">
               gateway
             </a>
-            <Button className="m-1" onClick={loadModel}>
+            <Button mode="light" className="m-1" onClick={loadModel}>
               Load Model
             </Button>
           </div>
           <div>
-            <Button className="m-1" onClick={clearModels}>
+            <Button mode="light" className="m-1" onClick={clearModels}>
               Clear Models
             </Button>
           </div>

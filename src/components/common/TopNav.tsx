@@ -1,8 +1,6 @@
 import React from "react";
-import Image from "next/image";
 import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 import { config } from "../../env/config";
-// import { Session } from "next-auth";
 import { Identity } from "./Identity";
 import { Session } from "../../types/web3/Session";
 
@@ -17,12 +15,8 @@ export const TopNav = (props: TopNavProps): JSX.Element => {
     <Box>
       <AppBar position="static">
         <Toolbar>
-          <Image
-            alt="Autodesk Icon"
-            src={config.icon}
-            height={16}
-            width={180}
-          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt="Autodesk Icon" src={config.icon} height={16} width={180} />
           <Typography variant="h6" style={{ flexGrow: 1 }}>
             {config.appName}
           </Typography>

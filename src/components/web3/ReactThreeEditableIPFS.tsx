@@ -1,9 +1,9 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { editable as e, configure } from "react-three-editable";
+import { editable as e, configure, EditableState } from "react-three-editable";
 import { PerspectiveCamera, Environment } from "@react-three/drei";
 
-import editableState from "./editableState";
+import editableState from "./editableState.json";
 
 const bind = configure({
   localStorageNamespace: "ice-cream",
@@ -13,7 +13,7 @@ const ECamera = e(PerspectiveCamera, "perspectiveCamera");
 
 export const ReactThreeEditableIPFS = (): JSX.Element => {
   return (
-    <Canvas shadowMap onCreated={bind({ state: editableState })}>
+    <Canvas onCreated={bind({ state: editableState as EditableState })}>
       <ECamera makeDefault uniqueName="Camera" />
       <e.spotLight
         uniqueName="Key Light"

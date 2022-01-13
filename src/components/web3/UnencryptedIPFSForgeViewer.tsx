@@ -4,7 +4,7 @@ import { Box, Button } from "@mui/material";
 import { Viewer } from "../forge/Viewer";
 import { ViewingContextProvider } from "../forge/ViewingContext";
 
-export const Dashboard = (): JSX.Element => {
+export const UnencryptedIPFSForgeViewer = (): JSX.Element => {
   const viewer = useRef<Autodesk.Viewing.GuiViewer3D>();
 
   const onViewerLoaded = useCallback((v: Autodesk.Viewing.GuiViewer3D) => {

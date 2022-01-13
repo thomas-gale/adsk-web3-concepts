@@ -9,6 +9,10 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { config } from "../env/config";
 import { theme } from "../env/theme";
 import { createEmotionCache } from "../env/createEmotionCache";
+import { useState } from "react";
+import { Box } from "@mui/material";
+import { TopNav } from "../components/common/TopNav";
+import { Session } from "../types/web3/Session";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -21,6 +25,9 @@ interface MyAppProps extends AppProps {
 
 const MyApp = (props: MyAppProps): JSX.Element => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+  const [session] = useState<Session | undefined>({
+    userPubKey: "0x000000042",
+  });
   return (
     <CacheProvider value={emotionCache}>
       <Head>
@@ -29,7 +36,17 @@ const MyApp = (props: MyAppProps): JSX.Element => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
+          <Box
+            style={{
+              margin: 0,
+              height: "100vh",
+              display: "grid",
+              gridTemplateRows: "auto 1fr",
+            }}
+          >
+            <TopNav session={session} />
+            {session && <Component {...pageProps} />}
+          </Box>
         </QueryClientProvider>
       </ThemeProvider>
     </CacheProvider>

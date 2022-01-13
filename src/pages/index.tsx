@@ -1,8 +1,8 @@
 import React from "react";
-import { App } from "../components/App";
+import { Dashboard } from "../components/Dashboard";
 
 const Index = (): JSX.Element => {
-  return <App />;
+  return <Dashboard />;
 };
 
 export default Index;

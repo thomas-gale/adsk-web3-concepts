@@ -1,32 +1,35 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
-import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
-import { GitHub } from "@mui/icons-material";
+import { useRouter } from "next/router";
 import { config } from "../../env/config";
 import { Identity } from "./Identity";
 import { Session } from "../../types/web3/Session";
+import { Button } from "../elements/Button";
 
 export interface TopNavProps {
   session: Session | undefined;
 }
 
-export const TopNav = (props: TopNavProps): JSX.Element => {
-  const { session } = props;
+export const TopNav = ({ session }: TopNavProps): JSX.Element => {
+  const router = useRouter();
 
   return (
-    <Box>
-      <AppBar position="static">
-        <Toolbar>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt="Autodesk Icon" src={config.icon} height={16} width={180} />
-          <IconButton color="inherit" aria-label="github" href={config.github}>
-            <GitHub />
-          </IconButton>
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
+    <div className="flex-shrink z-50 w-full pointer-events-none">
+      <div
+        className="p-4 bg-black flex flex-row items-center shadow-md rounded-xl"
+        style={{ justifyContent: "space-between" }}
+      >
+        <img src={config.icon} alt="Autodesk Logo" width={140} height={60} />
+        <div className="flex flex-row">
+          <h1 className="text-mmcBlue text-xl font-bold p-4">
             {config.appName}
-          </Typography>
+          </h1>
+          <Button onClick={async () => router.push(config.github)}>
+            Github
+          </Button>
           <Identity session={session} />
-        </Toolbar>
-      </AppBar>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 };

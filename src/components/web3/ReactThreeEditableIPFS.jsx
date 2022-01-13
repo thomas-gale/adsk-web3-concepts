@@ -1,5 +1,5 @@
 import React from "react";
-import { Viewport } from "../react-three-editable/Viewport";
+import { Viewport } from "../editablethree/Viewport";
 
 export const ReactThreeEditableIPFS = () => {
   return <Viewport />;

@@ -1,29 +1,26 @@
-import { Box, Button } from "@mui/material";
+import React from "react";
 import { useRouter } from "next/router";
+import { Button } from "./elements/Button";
 
 export const Dashboard = (): JSX.Element => {
   const router = useRouter();
   return (
-    <Box sx={{ m: 1, p: 1 }}>
-      <Box>
+    <div className="m-1 p-1">
+      <div>
         Page deployed on IPFS using <a href="https://fleek.co/">fleek</a>
-      </Box>
-      <Box>
+      </div>
+      <div>
         <Button
-          variant="outlined"
-          sx={{ m: 1 }}
           onClick={async (): Promise<boolean> => await router.push("/concept1")}
         >
           Concept 1 -Forge Viewer IPFS
         </Button>
         <Button
-          variant="outlined"
-          sx={{ m: 1 }}
           onClick={async (): Promise<boolean> => await router.push("/concept2")}
         >
           Concept 2 -React Three Editable IPFS
         </Button>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };

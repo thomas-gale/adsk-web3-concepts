@@ -1,0 +1,34 @@
+@tailwind base;
+
+@layer base {
+  h1 {
+    @apply text-3xl;
+    @apply py-2;
+    @apply font-bold;
+  }
+  h2 {
+    @apply text-2xl;
+    @apply font-semibold;
+    @apply py-1;
+  }
+  h3 {
+    @apply text-xl;
+  }
+  h4 {
+    @apply text-lg;
+    @apply font-bold;
+  }
+  ol {
+    @apply list-decimal;
+  }
+  ul {
+    @apply list-disc;
+  }
+  img {
+    @apply p-2;
+  }
+}
+
+@tailwind components;
+@tailwind utilities;
+

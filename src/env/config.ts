@@ -1,6 +1,7 @@
 export const config = {
   appName: "web3 concepts",
   icon: "/autodesk-logo-primary-rgb-white.svg",
+  github: "https://github.com/thomas-gale/adsk-web3-concepts",
   api: {
     forge: {
       auth: {
@@ -18,7 +19,8 @@ export const config = {
         script:
           "https://developer.api.autodesk.com/modelderivative/v2/viewers/7.55.1/viewer3D.min.js",
         examples: {
-          gearboxGltf: "https://gateway.pinata.cloud/ipfs/Qmaz3RP6BVNNJVPvEFSRjpXyGx6cxwFHHyJUKtX8Ue4r2b/GearboxAssy.gltf",
+          gearboxGltf:
+            "https://gateway.pinata.cloud/ipfs/Qmaz3RP6BVNNJVPvEFSRjpXyGx6cxwFHHyJUKtX8Ue4r2b/GearboxAssy.gltf",
         },
       },
       translation: {

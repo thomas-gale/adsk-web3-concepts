@@ -14,9 +14,6 @@ const ECamera = e(PerspectiveCamera, "perspectiveCamera");
 export const ReactThreeEditableIPFS = (): JSX.Element => {
   return (
     <Canvas shadowMap onCreated={bind({ state: editableState })}>
-      <Suspense fallback={null}>
-        <Environment files="equi.hdr" path="/" />
-      </Suspense>
       <ECamera makeDefault uniqueName="Camera" />
       <e.spotLight
         uniqueName="Key Light"

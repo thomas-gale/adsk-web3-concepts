@@ -29,7 +29,6 @@ export default class MyDocument extends Document {
 
 // `getInitialProps` belongs to `_document` (instead of `_app`),
 // it's compatible with static-site generation (SSG).
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 MyDocument.getInitialProps = async (ctx) => {
   // Resolution order
   //
@@ -60,10 +59,9 @@ MyDocument.getInitialProps = async (ctx) => {
   const cache = createEmotionCache();
   const { extractCriticalToChunks } = createEmotionServer(cache);
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   ctx.renderPage = () =>
     originalRenderPage({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type, react/display-name
+      // eslint-disable-next-line react/display-name
       enhanceApp: (App: any) => (props) =>
         <App emotionCache={cache} {...props} />,
     });

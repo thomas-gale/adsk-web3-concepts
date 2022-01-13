@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-namespace */
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback } from "react";
 import { config } from "../../env/config";
 import { Box } from "@mui/material";
 import { Viewer } from "../forge/Viewer";

@@ -291,11 +291,6 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.1.0.tgz#7f698254aadf921e48dda8c0a6b304026b8a9323"
   integrity sha512-JLo+Y592QzIE+q7Dl2pMUtt4q8SKYI5jDrZxrozEQxnGVOyYE+GWK9eLkwTaeN9DDctlaRAQ3TBmzZ1qdLE30A==
 
-"@types/forge-viewer@^7.55.1":
-  version "7.59.0"
-  resolved "https://registry.yarnpkg.com/@types/forge-viewer/-/forge-viewer-7.59.0.tgz#1e1ebe4de593494df0e2388252313aa7968a3649"
-  integrity sha512-tYJjsFFVY1yYUqmbfy54iYTpEfERVPNjou6009fHQe5iFbbf3G4xqdtYxxXXnCfDHGPwEpPiqoPVEwvfbQur4A==
-
 "@types/js-cookie@^2.2.6":
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/@types/js-cookie/-/js-cookie-2.2.7.tgz#226a9e31680835a6188e887f3988e60c04d3f6a3"

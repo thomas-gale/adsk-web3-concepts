@@ -1,34 +1,43 @@
 @tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   h1 {
     @apply text-3xl;
     @apply py-2;
     @apply font-bold;
+    @apply font-artifakt
   }
   h2 {
     @apply text-2xl;
     @apply font-semibold;
     @apply py-1;
+    @apply font-artifakt
   }
   h3 {
     @apply text-xl;
+    @apply font-artifakt
   }
   h4 {
     @apply text-lg;
     @apply font-bold;
+    @apply font-artifakt
   }
   ol {
     @apply list-decimal;
+    @apply font-artifakt
   }
   ul {
     @apply list-disc;
+    @apply font-artifakt
+  }
+  p {
+    @apply font-artifakt
   }
   img {
     @apply p-2;
+    @apply font-artifakt
   }
 }
-
-@tailwind components;
-@tailwind utilities;
 

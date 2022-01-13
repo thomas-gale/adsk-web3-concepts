@@ -21,5 +21,3 @@ export const MapCamera = (): JSX.Element => {
     </>
   );
 };
-
-

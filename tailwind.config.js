@@ -5,7 +5,7 @@ module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     fontFamily: {
-      sans: ["ArtifaktElement", "sans-serif"],
+      artifakt: ["ArtifaktElement", "sans-serif"],
     },
   },
   plugins: [],

@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from "react";
 import { config } from "../../env/config";
-import { Box, Button } from "@mui/material";
+import { Button } from "../elements/Button";
 import { Viewer } from "../forge/Viewer";
 import { ViewingContextProvider } from "../forge/ViewingContext";
 
@@ -30,32 +30,32 @@ export const ForgeViewerIPFS = (): JSX.Element => {
 
   return (
     <ViewingContextProvider options={{ env: "Local" }}>
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <Box sx={{ p: 1, m: 1 }}>
-          <Box>
+      <div className="flex flex-col">
+        <div className="p-1 m-1">
+          <div>
             Gearbox data (currently un-encrypted) stored on IPFS through{" "}
             <a href="https://gateway.pinata.cloud/ipfs/Qmaz3RP6BVNNJVPvEFSRjpXyGx6cxwFHHyJUKtX8Ue4r2b">
               gateway
             </a>
-            <Button sx={{ m: 1 }} variant="outlined" onClick={loadModel}>
+            <Button className="m-1" onClick={loadModel}>
               Load Model
             </Button>
-          </Box>
-          <Box>
-            <Button sx={{ m: 1 }} variant="outlined" onClick={clearModels}>
+          </div>
+          <div>
+            <Button className="m-1" onClick={clearModels}>
               Clear Models
             </Button>
-          </Box>
-        </Box>
-        <Box sx={{ flexGrow: 1 }}>
+          </div>
+        </div>
+        <div className="flex-grow">
           <Viewer
             config={{
               extensions: ["Autodesk.Viewing.SceneBuilder", "Autodesk.glTF"],
             }}
             onLoaded={onViewerLoaded}
           />
-        </Box>
-      </Box>
+        </div>
+      </div>
     </ViewingContextProvider>
   );
 };

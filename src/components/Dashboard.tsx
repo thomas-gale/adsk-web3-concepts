@@ -15,14 +15,14 @@ export const Dashboard = (): JSX.Element => {
           className="m-2"
           onClick={async (): Promise<boolean> => await router.push("/concept1")}
         >
-          Concept 1 -Forge Viewer IPFS
+          Concept 1 - Forge Viewer IPFS
         </Button>
         <Button
           mode="light"
           className="m-2"
           onClick={async (): Promise<boolean> => await router.push("/concept2")}
         >
-          Concept 2 -React Three Editable IPFS
+          Concept 2 - React Three Editable IPFS
         </Button>
       </div>
     </div>

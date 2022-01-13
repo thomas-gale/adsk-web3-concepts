@@ -18,10 +18,18 @@ export const Dashboard = (): JSX.Element => {
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Box sx={{ p: 1, m: 1 }}>
           <p>
-            Data stored on IPFS through gateway:{" "}
-            <a href={config.api.forge.viewer.examples.gearboxGltf}>
-              {config.api.forge.viewer.examples.gearboxGltf}
-            </a>
+            <ul>
+              <li>
+                Gearbox data (currently un-encrypted) stored on IPFS through{" "}
+                <a href={config.api.forge.viewer.examples.gearboxGltf}>
+                  gateway
+                </a>
+              </li>
+              <li>
+                Page deployed on IPFS using{" "}
+                <a href="https://fleek.co/">fleek</a>
+              </li>
+            </ul>
           </p>
         </Box>
         <Box sx={{ flexGrow: 1 }}>

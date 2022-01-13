@@ -1,8 +1,8 @@
 import React from "react";
-import { UnencryptedIPFSForgeViewer } from "../components/web3/UnencryptedIPFSForgeViewer";
+import { ForgeViewerIPFS } from "../components/web3/ForgeViewerIPFS";
 
 const Concept1 = (): JSX.Element => {
-  return <UnencryptedIPFSForgeViewer />;
+  return <ForgeViewerIPFS />;
 };
 
 export default Concept1;

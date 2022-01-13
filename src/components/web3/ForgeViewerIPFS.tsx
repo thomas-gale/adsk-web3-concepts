@@ -4,7 +4,7 @@ import { Box, Button } from "@mui/material";
 import { Viewer } from "../forge/Viewer";
 import { ViewingContextProvider } from "../forge/ViewingContext";
 
-export const UnencryptedIPFSForgeViewer = (): JSX.Element => {
+export const ForgeViewerIPFS = (): JSX.Element => {
   const viewer = useRef<Autodesk.Viewing.GuiViewer3D>();
 
   const onViewerLoaded = useCallback((v: Autodesk.Viewing.GuiViewer3D) => {
@@ -33,18 +33,17 @@ export const UnencryptedIPFSForgeViewer = (): JSX.Element => {
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Box sx={{ p: 1, m: 1 }}>
           <Box>
-            Page deployed on IPFS using <a href="https://fleek.co/">fleek</a>
-            <Button sx={{ m: 1 }} variant="outlined" onClick={clearModels}>
-              Clear Models
-            </Button>
-          </Box>
-          <Box>
             Gearbox data (currently un-encrypted) stored on IPFS through{" "}
             <a href="https://gateway.pinata.cloud/ipfs/Qmaz3RP6BVNNJVPvEFSRjpXyGx6cxwFHHyJUKtX8Ue4r2b">
               gateway
             </a>
             <Button sx={{ m: 1 }} variant="outlined" onClick={loadModel}>
               Load Model
+            </Button>
+          </Box>
+          <Box>
+            <Button sx={{ m: 1 }} variant="outlined" onClick={clearModels}>
+              Clear Models
             </Button>
           </Box>
         </Box>

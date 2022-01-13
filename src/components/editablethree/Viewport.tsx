@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Loader, OrbitControls } from "@react-three/drei";
+import { Loader } from "@react-three/drei";
 import { Editor } from "./Editor";
 
 export const Viewport = (): JSX.Element => {

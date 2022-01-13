@@ -3,7 +3,7 @@ import {
   OrbitControls,
   TransformControls,
 } from "@react-three/drei";
-import React, { Ref, useRef, useState } from "react";
+import React, { useState } from "react";
 
 export const Editor = (): JSX.Element => {
   const [suppressOrbit, setSuppressOrbit] = useState(false);
@@ -16,7 +16,7 @@ export const Editor = (): JSX.Element => {
         onMouseUp={() => setSuppressOrbit(false)}
       >
         <Dodecahedron>
-          <meshBasicMaterial attach="material" color="hotpink" wireframe />
+          <meshBasicMaterial attach="material" color="gray" wireframe />
         </Dodecahedron>
       </TransformControls>
     </group>

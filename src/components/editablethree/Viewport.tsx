@@ -15,7 +15,7 @@ import * as IPFS from "ipfs-core";
 export const Viewport = (): JSX.Element => {
   const ipfsRef = useRef<IPFS.IPFS>();
   const [nodeActive, setNodeActive] = useState(false);
-  const [testStr, setTestStr] = useState("Hello IPFS World");
+  // const [testStr, setTestStr] = useState("Hello IPFS World");
   const [loadDataCid, setLoadDataCid] = useState("");
   const [saveDataCid, setSaveDataCid] = useState("");
   const [sceneState, setSceneState] = useState({
@@ -109,16 +109,17 @@ export const Viewport = (): JSX.Element => {
         // chunks of data are returned as a Buffer, convert it back to a string
         data += chunk.toString();
       }
-      console.log(data);
+      setSceneState(JSON.parse(data));
+      // console.log(data);
     }
   }, [loadDataCid]);
 
   const onSave = useCallback(async () => {
     console.log("onSave");
     if (ipfsRef.current) {
-      const { cid } = await ipfsRef.current.add(testStr);
+      const { cid } = await ipfsRef.current.add(JSON.stringify(sceneState));
       setSaveDataCid(cid.toString());
-      console.info(cid.toString());
+      // console.info(cid.toString());
 
       // console.log("pinning data locally");
       // const pinned = await ipfsRef.current.pin.add(cid);
@@ -129,7 +130,7 @@ export const Viewport = (): JSX.Element => {
       //   new TextEncoder().encode(testStr)
       // );
     }
-  }, [testStr]);
+  }, [sceneState]);
 
   return (
     <div className="flex flex-col w-full h-full overflow-hidden">
@@ -139,12 +140,12 @@ export const Viewport = (): JSX.Element => {
           {/* <Button mode="light" className="mr-4" onClick={refresh}>
             Refresh Status
           </Button> */}
-          <input
+          {/* <input
             className="p-2 m-2 font-artifakt bg-light text-dark shadow-lg"
             type="text"
             value={testStr}
             onChange={(e) => setTestStr(e.target.value)}
-          />
+          /> */}
           <div className="flex flex-row mt-2">
             <input
               className="p-2 m-2 font-artifakt bg-light text-dark shadow-lg"

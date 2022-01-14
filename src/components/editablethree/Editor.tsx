@@ -15,10 +15,6 @@ export const Editor = ({
 }: EditorProps): JSX.Element => {
   const [selectedNode, setSelectedNode] = useState("");
 
-  useEffect(() => {
-    console.log("Selected Node ", selectedNode);
-  }, [selectedNode]);
-
   return (
     <group>
       <OrbitControls makeDefault />

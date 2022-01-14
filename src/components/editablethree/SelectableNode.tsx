@@ -22,12 +22,10 @@ export const SelectableNode = ({
 
   useEffect(() => {
     if (selected) {
-      console.log(`node ${node.id} selected`);
       if (transRef.current && meshRef.current) {
         transRef.current.attach(meshRef.current);
       }
     } else {
-      console.log(`node ${node.id} unselected`);
       if (transRef.current && meshRef.current) {
         transRef.current.detach();
       }

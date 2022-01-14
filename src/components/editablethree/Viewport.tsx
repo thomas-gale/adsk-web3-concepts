@@ -1,8 +1,9 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Loader } from "@react-three/drei";
 import { Editor } from "./Editor";
 import { SceneState } from "../../types/editablethree/SceneState";
+import { Button } from "../elements/Button";
 
 export const Viewport = (): JSX.Element => {
   const [sceneState, setSceneState] = useState({
@@ -28,13 +29,17 @@ export const Viewport = (): JSX.Element => {
     ],
   } as SceneState);
 
-  useEffect(() => {
-    console.log("SceneState", sceneState);
-  }, [sceneState]);
+  const onLoad = useCallback(() => {
+    console.log("onLoad");
+  }, []);
+
+  const onSave = useCallback(() => {
+    console.log("onSave");
+  }, []);
 
   return (
     <div className="flex flex-col w-full h-full overflow-hidden">
-      <div className="absolute flex">
+      <div className="z-10 absolute flex">
         <div className="flex flex-col m-4 p-4 min-w-max rounded-xl bg-dark text-light bg-opacity-90 shadow-lg">
           {sceneState.nodes.map((node) => (
             <div key={node.id} className="flex flex-row">
@@ -50,6 +55,14 @@ export const Viewport = (): JSX.Element => {
               </div>
             </div>
           ))}
+          <div className="flex flex-row mt-2">
+            <Button mode="light" className="mr-4" onClick={onLoad}>
+              Load
+            </Button>
+            <Button mode="light" onClick={onSave}>
+              Save
+            </Button>
+          </div>
         </div>
       </div>
       <Canvas>

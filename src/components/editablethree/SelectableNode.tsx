@@ -17,38 +17,41 @@ export const SelectableNode = ({
   onUpdatedPosition,
   onClick,
 }: SelectableProps): JSX.Element => {
-  const ref = React.useRef<TransformControlsImpl>(null);
-
-  // useEffect(() => {
-  //   ref.current?.position.set(
-  //     children?.props.position.x ?? 0,
-  //     children?.props.position.y ?? 0,
-  //     children?.props.position.z ?? 0
-  //   );
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  const transRef = React.useRef<TransformControlsImpl>(null);
+  const meshRef = React.useRef<THREE.Mesh>(null);
 
   useEffect(() => {
     if (selected) {
       console.log(`node ${node.id} selected`);
+      if (transRef.current && meshRef.current) {
+        transRef.current.attach(meshRef.current);
+      }
     } else {
       console.log(`node ${node.id} unselected`);
+      if (transRef.current && meshRef.current) {
+        transRef.current.detach();
+      }
     }
-  }, [selected]);
+  }, [node.id, selected]);
 
   return (
     <>
       <TransformControls
-        ref={ref}
+        ref={transRef}
         onChange={(e) => onUpdatedPosition(e?.target.worldPosition)}
       />
       {node.type === "cube" && (
-        <Box onClick={onClick} position={[node.pos.x, node.pos.y, node.pos.z]}>
+        <Box
+          ref={meshRef}
+          onClick={onClick}
+          position={[node.pos.x, node.pos.y, node.pos.z]}
+        >
           <meshStandardMaterial color="red" />
         </Box>
       )}
       {node.type === "cylinder" && (
         <Cylinder
+          ref={meshRef}
           onClick={onClick}
           position={[node.pos.x, node.pos.y, node.pos.z]}
         >
@@ -57,6 +60,7 @@ export const SelectableNode = ({
       )}{" "}
       {node.type === "sphere" && (
         <Sphere
+          ref={meshRef}
           onClick={onClick}
           position={[node.pos.x, node.pos.y, node.pos.z]}
         >

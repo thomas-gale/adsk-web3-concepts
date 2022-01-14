@@ -7,7 +7,7 @@ import React, {
   VFC,
 } from "react";
 import { useEditorStore } from "../store";
-import { createPortal } from "react-three-fiber";
+import { createPortal } from "@react-three/fiber";
 import EditableProxy from "./EditableProxy";
 import { OrbitControls } from "@react-three/drei";
 import TransformControls from "./TransformControls";

@@ -1,8 +1,8 @@
 import React, { forwardRef } from "react";
-import { Checkbox as CheckboxImpl, CheckboxProps } from "reakit";
+import { Checkbox as CheckboxImpl, CheckboxProps as RKCheckboxProps } from "reakit";
 import { useFormControlContext } from "./FormControl";
 
-export { CheckboxProps };
+export type CheckboxProps = RKCheckboxProps;
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   ({ children, ...props }, ref) => {

@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
-import { Button as ButtonImpl, ButtonProps } from "reakit";
+import { Button as ButtonImpl, ButtonProps as RKButtonProps} from "reakit";
 
-export { ButtonProps };
+export type ButtonProps = RKButtonProps;
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   return (

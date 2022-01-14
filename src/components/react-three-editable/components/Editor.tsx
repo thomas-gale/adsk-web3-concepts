@@ -6,7 +6,7 @@ import React, {
   VFC,
   Suspense,
 } from "react";
-import { Canvas, useThree } from "react-three-fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { useEditorStore } from "../store";
 import { OrbitControls, Environment } from "@react-three/drei";
 import shallow from "zustand/shallow";
@@ -25,9 +25,10 @@ import {
   ModalBody,
   IdProvider,
 } from "./elements";
+import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
 const EditorScene = () => {
-  const orbitControlsRef = useRef<OrbitControls>();
+  const orbitControlsRef = useRef<OrbitControlsImpl>(null);
   const { camera } = useThree();
 
   const [
@@ -118,13 +119,10 @@ const Editor: VFC = () => {
                   <>
                     <div className="relative z-0 h-full">
                       <Canvas
-                        colorManagement
                         camera={{ position: [20, 20, 20] }}
                         onCreated={({ gl }) => {
                           gl.setClearColor("white");
                         }}
-                        shadowMap
-                        pixelRatio={window.devicePixelRatio}
                         onPointerMissed={() => setSelected(null)}
                       >
                         <EditorScene />
@@ -146,7 +144,7 @@ const Editor: VFC = () => {
                       </div>
                       <Code block>
                         {`import React from 'react';
-import { Canvas } from 'react-three-fiber';
+import { Canvas } from '@react-three/fiber';
 import { configure, editable as e } from 'react-three-editable';
 
 const bind = configure({
@@ -200,7 +198,10 @@ const MyComponent = () => (
                 </Button>
               )}
             </div>
-            <Modal visible={stateMismatch}>
+            <Modal
+              hide={() => console.log("modelHide")}
+              visible={stateMismatch}
+            >
               <ModalHeader>Saved state found</ModalHeader>
               <ModalBody>
                 Would you like to use initial state or saved state?

@@ -4,6 +4,7 @@ import { Loader } from "@react-three/drei";
 import { Editor } from "./Editor";
 import { SceneState } from "../../types/editablethree/SceneState";
 import { Button } from "../elements/Button";
+import { Ipfs } from "../web3/Ipfs";
 
 export const Viewport = (): JSX.Element => {
   const [sceneState, setSceneState] = useState({
@@ -41,7 +42,7 @@ export const Viewport = (): JSX.Element => {
     <div className="flex flex-col w-full h-full overflow-hidden">
       <div className="z-10 absolute flex flex-col">
         <div className="flex flex-col m-4 p-4 min-w-max rounded-xl bg-dark text-light bg-opacity-90 shadow-lg">
-          <div>IPFS Location: TODO</div>
+          <Ipfs />
           <div className="flex flex-row mt-2">
             <Button mode="light" className="mr-4" onClick={onLoad}>
               Load

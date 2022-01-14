@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import * as THREE from "three";
-import {
-  Box,
-  Cylinder,
-  OrbitControls,
-  Sphere,
-  TransformControls,
-} from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { SceneState } from "../../types/editablethree/SceneState";
 import { SelectableNode } from "./SelectableNode";
 // import { Mesh } from "three";
@@ -29,7 +22,6 @@ export const Editor = ({
   return (
     <group>
       <OrbitControls makeDefault />
-      <TransformControls />
       {sceneState.nodes.map((node) => (
         <SelectableNode
           key={node.id}

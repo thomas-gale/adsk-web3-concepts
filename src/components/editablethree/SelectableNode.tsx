@@ -38,7 +38,8 @@ export const SelectableNode = ({
     <>
       <TransformControls
         ref={transRef}
-        onChange={(e) => onUpdatedPosition(e?.target.worldPosition)}
+        enabled={selected}
+        onObjectChange={(e) => onUpdatedPosition(e?.target.worldPosition)}
       />
       {node.type === "cube" && (
         <Box

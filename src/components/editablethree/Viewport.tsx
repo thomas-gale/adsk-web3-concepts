@@ -15,7 +15,6 @@ import * as IPFS from "ipfs-core";
 export const Viewport = (): JSX.Element => {
   const ipfsRef = useRef<IPFS.IPFS>();
   const [nodeActive, setNodeActive] = useState(false);
-  // const [testStr, setTestStr] = useState("Hello IPFS World");
   const [loadDataCid, setLoadDataCid] = useState("");
   const [saveDataCid, setSaveDataCid] = useState("");
   const [sceneState, setSceneState] = useState({
@@ -44,26 +43,18 @@ export const Viewport = (): JSX.Element => {
   useEffect(() => {
     (async () => {
       const ipfs = await IPFS.create({
-        // repo: "ok" + Math.random(), // random so we get a new peerid every time, useful for testing
         repo: "adsk-web3-concepts", // should this be somehow related to the user metamask public key?
         config: {
           Addresses: {
             Swarm: [
-              // This is self hosted heroku webrtc-star server
-              "/dns4/boiling-wildwood-67837.herokuapp.com/tcp/443/wss/p2p-webrtc-star/",
-              // This is a public webrtc-star server
-              // '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
-              // '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
+              // This are a public webrtc-star servers
+              "/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
+              "/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
             ],
           },
         },
       });
       ipfsRef.current = ipfs;
-
-      // ipfsRef.current.pubsub.subscribe("test", (msg) => {
-      //   console.log("Pubsub message received:", msg);
-      // });
-
       setNodeActive(true);
     })();
     return () => {
@@ -76,31 +67,7 @@ export const Viewport = (): JSX.Element => {
     };
   }, []);
 
-  // const refresh = useCallback(async () => {
-  //   if (ipfsRef.current) {
-  //     const id = await ipfsRef.current.id();
-  //     console.log("id", id);
-  //     const peers = await ipfsRef.current.swarm.peers();
-  //     console.log("peers", peers);
-  //     console.log("pins:");
-  //     for await (const { cid, type } of ipfsRef.current.pin.ls()) {
-  //       console.log(cid.toString(), type);
-  //     }
-  //     const wantlist = await ipfsRef.current.bitswap.wantlist();
-  //     console.log(
-  //       "wantlist",
-  //       wantlist.map((w) => w.toString())
-  //     );
-  //     const bitswapstats = await ipfsRef.current.stats.bitswap();
-  //     console.log("bitswap stats", bitswapstats);
-
-  //     const repostats = await ipfsRef.current.stats.repo();
-  //     console.log("repo stats", repostats);
-  //   }
-  // }, []);
-
   const onLoad = useCallback(async () => {
-    console.log("onLoad");
     if (ipfsRef.current) {
       console.log("Loading", loadDataCid);
       const stream = ipfsRef.current.cat(loadDataCid);
@@ -110,25 +77,13 @@ export const Viewport = (): JSX.Element => {
         data += chunk.toString();
       }
       setSceneState(JSON.parse(data));
-      // console.log(data);
     }
   }, [loadDataCid]);
 
   const onSave = useCallback(async () => {
-    console.log("onSave");
     if (ipfsRef.current) {
       const { cid } = await ipfsRef.current.add(JSON.stringify(sceneState));
       setSaveDataCid(cid.toString());
-      // console.info(cid.toString());
-
-      // console.log("pinning data locally");
-      // const pinned = await ipfsRef.current.pin.add(cid);
-      // console.log("pinned", pinned.toString());
-
-      // await ipfsRef.current.pubsub.publish(
-      //   "test",
-      //   new TextEncoder().encode(testStr)
-      // );
     }
   }, [sceneState]);
 
@@ -137,15 +92,6 @@ export const Viewport = (): JSX.Element => {
       <div className="z-10 absolute flex flex-col">
         <div className="flex flex-col m-4 p-4 min-w-max rounded-xl bg-dark text-light bg-opacity-90 shadow-lg">
           <div>IPFS Node {nodeActive ? "✅" : "⚠️"}</div>
-          {/* <Button mode="light" className="mr-4" onClick={refresh}>
-            Refresh Status
-          </Button> */}
-          {/* <input
-            className="p-2 m-2 font-artifakt bg-light text-dark shadow-lg"
-            type="text"
-            value={testStr}
-            onChange={(e) => setTestStr(e.target.value)}
-          /> */}
           <div className="flex flex-row mt-2">
             <input
               className="p-2 m-2 font-artifakt bg-light text-dark shadow-lg"

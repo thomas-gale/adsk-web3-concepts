@@ -2,35 +2,43 @@
 import React from "react";
 import Head from "next/head";
 import { AppProps } from "next/app";
+
+import { Web3Provider } from "@ethersproject/providers";
+import { Web3ReactProvider } from "@web3-react/core";
+
 import { QueryClient, QueryClientProvider } from "react-query";
 import { config } from "../env/config";
-import { useState } from "react";
 import { TopNav } from "../components/elements/TopNav";
-import { Session } from "../types/web3/Session";
 import "@hig/fonts/build/ArtifaktElement.css";
 import "../styles/globals.css";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getLibrary = (provider: any): Web3Provider => {
+  const library = new Web3Provider(provider);
+  library.pollingInterval = 12000;
+  return library;
+};
 
 const queryClient = new QueryClient();
 
 const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
-  const [session, setSession] = useState<Session | undefined>({
-    userPubKey: "0x000000042",
-  });
   return (
     <>
       <Head>
         <title>{config.appName}</title>
       </Head>
-      <QueryClientProvider client={queryClient}>
-        <div className="flex flex-col h-screen w-screen">
-          <div className="flex-shrink">
-            <TopNav session={session} setSession={setSession} />
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <QueryClientProvider client={queryClient}>
+          <div className="flex flex-col h-screen w-screen">
+            <div className="flex-shrink">
+              <TopNav />
+            </div>
+            <div className="bg-light h-full">
+              <Component {...pageProps} />
+            </div>
           </div>
-          <div className="bg-light h-full">
-            {session && <Component {...pageProps} />}
-          </div>
-        </div>
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </Web3ReactProvider>
     </>
   );
 };

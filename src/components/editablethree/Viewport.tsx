@@ -34,7 +34,7 @@ export const Viewport = (): JSX.Element => {
 
   return (
     <div className="flex flex-col w-full h-full overflow-hidden">
-      <div className="z-50 absolute flex">
+      <div className="absolute flex">
         <div className="flex flex-col m-4 p-4 min-w-max rounded-xl bg-dark text-light bg-opacity-90 shadow-lg">
           {sceneState.nodes.map((node) => (
             <div key={node.id} className="flex flex-row">

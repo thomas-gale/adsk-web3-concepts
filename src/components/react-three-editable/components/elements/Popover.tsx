@@ -7,7 +7,8 @@ import {
   PopoverDisclosure,
 } from "reakit";
 
-export { PopoverProps, PopoverDisclosure, usePopoverState };
+export { PopoverDisclosure, usePopoverState };
+export type { PopoverProps };
 
 export const Popover: VFC<PopoverProps> = ({
   className,

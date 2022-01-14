@@ -8,7 +8,8 @@ import {
   WebGLRenderer,
 } from "three";
 import { MutableRefObject } from "react";
-import { OrbitControls } from "@react-three/drei";
+// import { OrbitControls } from "@react-three/drei";
+import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import deepEqual from "fast-deep-equal";
 
 export type EditableType =
@@ -159,7 +160,10 @@ export type EditorStore = {
   scene: Scene | null;
   gl: WebGLRenderer | null;
   allowImplicitInstancing: boolean;
-  orbitControlsRef: MutableRefObject<OrbitControls | undefined> | null;
+  orbitControlsRef:
+    | MutableRefObject<OrbitControlsImpl | undefined>
+    | undefined
+    | null;
   editables: Record<string, Editable>;
   // this will come in handy when we start supporting multiple canvases
   canvasName: string;
@@ -185,7 +189,7 @@ export type EditorStore = {
     initialState?: EditableState
   ) => void;
   setOrbitControlsRef: (
-    orbitControlsRef: MutableRefObject<OrbitControls | undefined>
+    orbitControlsRef: MutableRefObject<OrbitControlsImpl | undefined>
   ) => void;
   addEditable: <T extends EditableType>(
     type: T,
@@ -288,7 +292,7 @@ const config: StateCreator<EditorStore> = (set, get) => {
         gl,
         allowImplicitInstancing,
         editables: newEditables,
-        initialState,
+        initialState: initialState as EditableState | null,
       });
     },
     addEditable: (type, uniqueName, initialProperties) =>

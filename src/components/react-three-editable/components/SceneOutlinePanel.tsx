@@ -46,9 +46,10 @@ const ObjectButton: VFC<ObjectButtonProps> = ({
   }
 
   return (
+    // @ts-ignore
     <ButtonImpl
-      // @ts-ignore
       {...props}
+      // @ts-ignore
       className={`inline-flex justify-start items-center rounded-md px-4 py-2 font-medium focus:outline-none focus:ring focus:ring-blue-300 ${
         objectName === selected
           ? "bg-green-800 hover:bg-green-900 text-white"

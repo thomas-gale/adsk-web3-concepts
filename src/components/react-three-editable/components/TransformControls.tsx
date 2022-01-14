@@ -3,6 +3,7 @@ import React, { forwardRef, useLayoutEffect, useEffect, useMemo } from "react";
 import { ReactThreeFiber, useThree, Overwrite } from "@react-three/fiber";
 import { TransformControls as TransformControlsImpl } from "three/examples/jsm/controls/TransformControls";
 import { OrbitControls } from "@react-three/drei";
+import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
 type R3fTransformControls = Overwrite<
   ReactThreeFiber.Object3DNode<
@@ -14,7 +15,7 @@ type R3fTransformControls = Overwrite<
 
 export interface TransformControlsProps extends R3fTransformControls {
   object: Object3D;
-  orbitControlsRef?: React.MutableRefObject<OrbitControls | undefined>;
+  orbitControlsRef?: React.MutableRefObject<OrbitControlsImpl | null>;
   onObjectChange?: (event: Event) => void;
   onDraggingChange?: (event: Event) => void;
 }

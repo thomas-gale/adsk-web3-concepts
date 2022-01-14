@@ -11,7 +11,6 @@ import { useEditorStore } from "../store";
 import { OrbitControls, Environment } from "@react-three/drei";
 import shallow from "zustand/shallow";
 import root from "react-shadow";
-import styles from "../styles.css";
 import UI from "./UI";
 import ProxyManager from "./ProxyManager";
 import {
@@ -28,7 +27,7 @@ import {
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
 const EditorScene = () => {
-  const orbitControlsRef = useRef<OrbitControlsImpl>(null);
+  const orbitControlsRef = useRef<OrbitControlsImpl | null | undefined>(null);
   const { camera } = useThree();
 
   const [
@@ -49,7 +48,9 @@ const EditorScene = () => {
   );
 
   useEffect(() => {
-    setOrbitControlsRef(orbitControlsRef);
+    setOrbitControlsRef(
+      orbitControlsRef as React.MutableRefObject<OrbitControlsImpl | undefined>
+    );
   }, [camera, setOrbitControlsRef]);
 
   return (
@@ -66,8 +67,14 @@ const EditorScene = () => {
       </Suspense>
       {showGrid && <gridHelper args={[1000, 1000, 0x444444, 0x888888]} />}
       {showAxes && <axesHelper args={[500]} />}
-      <OrbitControls ref={orbitControlsRef} />
-      <ProxyManager orbitControlsRef={orbitControlsRef} />
+      <OrbitControls
+        ref={orbitControlsRef as React.RefObject<OrbitControlsImpl>}
+      />
+      <ProxyManager
+        orbitControlsRef={
+          orbitControlsRef as React.MutableRefObject<OrbitControlsImpl | null>
+        }
+      />
     </>
   );
 };
@@ -226,7 +233,6 @@ const MyComponent = () => (
                 </Button>
               </ModalFooter>
             </Modal>
-            <style type="text/css">{styles}</style>
           </IdProvider>
         </PortalManager>
       </div>

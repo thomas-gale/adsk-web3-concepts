@@ -7,17 +7,15 @@ import {
   useTooltipState,
 } from "reakit";
 
-export {
-  TooltipProps,
-  TooltipReference,
-  TooltipReferenceProps,
-  useTooltipState,
-};
+export { TooltipReference, useTooltipState };
+export type { TooltipProps, TooltipReferenceProps };
 
 export const Tooltip: VFC<TooltipProps> = ({ className, ...props }) => (
+  // ts-ignore
   <TooltipImpl
     // @ts-ignore
     {...props}
+    // @ts-ignore
     className={`${className} px-2 py-1  text-white bg-gray-700 rounded-sm text-sm pointer-events-none shadow-md`}
   />
 );

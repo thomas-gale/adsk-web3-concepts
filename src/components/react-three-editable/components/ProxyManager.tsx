@@ -7,6 +7,7 @@ import React, {
   VFC,
 } from "react";
 import { useEditorStore } from "../store";
+import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { createPortal } from "@react-three/fiber";
 import EditableProxy from "./EditableProxy";
 import { OrbitControls } from "@react-three/drei";
@@ -22,7 +23,7 @@ import {
 } from "three";
 
 export interface ProxyManagerProps {
-  orbitControlsRef: React.MutableRefObject<OrbitControls | undefined>;
+  orbitControlsRef: React.MutableRefObject<OrbitControlsImpl | null>;
 }
 
 type EditableProxy = {
@@ -76,7 +77,7 @@ const ProxyManager: VFC<ProxyManagerProps> = ({ orbitControlsRef }) => {
                 editableType={object.userData.__editableType}
                 object={object}
               />,
-              object.parent
+              object.parent as Object3D<Event>
             ),
             object: object,
           };

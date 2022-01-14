@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Vector3 } from "three";
+import React, { useEffect, useRef } from "react";
 import { TransformControls as TransformControlsImpl } from "three-stdlib";
 import {
   Cylinder,

@@ -48,8 +48,7 @@ export const Viewport = (): JSX.Element => {
         config: {
           Addresses: {
             Swarm: [
-              "/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
-              "/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
+              "/dns4/boiling-wildwood-67837.herokuapp.com/tcp/443/wss/p2p-webrtc-star/",
             ],
           },
         },
@@ -65,6 +64,15 @@ export const Viewport = (): JSX.Element => {
           .finally(() => setNodeActive(false));
       }
     };
+  }, []);
+
+  const refresh = useCallback(async () => {
+    if (ipfsRef.current) {
+      const id = await ipfsRef.current.id();
+      console.log("id", id);
+      const peers = await ipfsRef.current.swarm.peers();
+      console.log("peers", peers);
+    }
   }, []);
 
   const onLoad = useCallback(async () => {
@@ -95,6 +103,9 @@ export const Viewport = (): JSX.Element => {
       <div className="z-10 absolute flex flex-col">
         <div className="flex flex-col m-4 p-4 min-w-max rounded-xl bg-dark text-light bg-opacity-90 shadow-lg">
           <div>IPFS Node {nodeActive ? "✅" : "⚠️"}</div>
+          <Button mode="light" className="mr-4" onClick={refresh}>
+            Refresh Status
+          </Button>
           <input
             className="p-2 m-2 font-artifakt bg-light text-dark shadow-lg"
             type="text"

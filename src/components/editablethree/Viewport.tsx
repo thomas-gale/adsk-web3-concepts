@@ -44,7 +44,8 @@ export const Viewport = (): JSX.Element => {
               <div className="mx-1">{node.type}</div>
               <div className="mx-1">
                 <i>
-                  x{node.pos.x} y{node.pos.y} z{node.pos.z}
+                  x{node.pos.x.toPrecision(4)} y{node.pos.y.toPrecision(4)} z
+                  {node.pos.z.toPrecision(4)}
                 </i>
               </div>
             </div>

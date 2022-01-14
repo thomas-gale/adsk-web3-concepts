@@ -1,5 +1,5 @@
 import React from "react";
-import { ReactThreeEditableIPFS } from "../components/web3/ReactThreeEditableIPFS";
+import { ReactThreeEditableIPFS } from "../components/dashboard/ReactThreeEditableIPFS";
 
 const Concept2 = (): JSX.Element => {
   return <ReactThreeEditableIPFS />;

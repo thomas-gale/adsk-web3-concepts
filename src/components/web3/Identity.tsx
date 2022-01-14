@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "./Button";
+import { Button } from "../elements/Button";
 
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";

@@ -3,7 +3,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import { config } from "../../env/config";
 import { Button } from "./Button";
-import { Identity } from "./Identity";
+import { Identity } from "../web3/Identity";
 
 export const TopNav = (): JSX.Element => {
   const router = useRouter();

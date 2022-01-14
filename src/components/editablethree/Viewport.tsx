@@ -1,14 +1,32 @@
 import React, { Suspense, useEffect, useState } from "react";
-import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { Loader } from "@react-three/drei";
 import { Editor } from "./Editor";
+import { SceneState } from "../../types/editablethree/SceneState";
 
 export const Viewport = (): JSX.Element => {
   const [sceneState, setSceneState] = useState({
-    object1pos: new THREE.Vector3(0, 0, 0),
-    object2pos: new THREE.Vector3(1, 0, 0),
-  });
+    nodes: [
+      {
+        id: "object1",
+        type: "cube",
+        pos: { x: 0, y: 0, z: 0 },
+        children: [],
+      },
+      {
+        id: "object2",
+        type: "cylinder",
+        pos: { x: 1, y: 1, z: 2 },
+        children: [],
+      },
+      {
+        id: "object3",
+        type: "sphere",
+        pos: { x: -3, y: -1, z: -1 },
+        children: [],
+      },
+    ],
+  } as SceneState);
 
   useEffect(() => {
     console.log("SceneState", sceneState);
@@ -17,8 +35,20 @@ export const Viewport = (): JSX.Element => {
   return (
     <div className="flex flex-col w-full h-full overflow-hidden">
       <div className="z-50 absolute flex">
-        <div className="m-4 p-4 rounded-xl bg-dark bg-opacity-60">
-          Hello World
+        <div className="flex flex-col m-4 p-4 min-w-max rounded-xl bg-dark text-light bg-opacity-90 shadow-lg">
+          {sceneState.nodes.map((node) => (
+            <div key={node.id} className="flex flex-row">
+              <div className="mx-1">
+                <b>{node.id}</b>
+              </div>
+              <div className="mx-1">{node.type}</div>
+              <div className="mx-1">
+                <i>
+                  x{node.pos.x} y{node.pos.y} z{node.pos.z}
+                </i>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
       <Canvas>

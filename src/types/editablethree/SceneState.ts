@@ -1,6 +1,16 @@
-import * as THREE from "three";
+export interface Vector3 {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface Node {
+  id: string;
+  type: "cylinder" | "sphere" | "cube";
+  pos: Vector3;
+  children: Node[];
+}
 
 export interface SceneState {
-  object1pos: THREE.Vector3;
-  object2pos: THREE.Vector3;
+  nodes: Node[];
 }

@@ -15,6 +15,7 @@ import * as IPFS from "ipfs-core";
 export const Viewport = (): JSX.Element => {
   const ipfsRef = useRef<IPFS.IPFS>();
   const [nodeActive, setNodeActive] = useState(false);
+  const [testStr, setTestStr] = useState("Hello IPFS World");
   const [loadDataCid, setLoadDataCid] = useState("");
   const [saveDataCid, setSaveDataCid] = useState("");
   const [sceneState, setSceneState] = useState({
@@ -42,12 +43,19 @@ export const Viewport = (): JSX.Element => {
 
   useEffect(() => {
     (async () => {
-      const ipfs = await IPFS.create();
+      const ipfs = await IPFS.create({
+        repo: "ok" + Math.random(), // random so we get a new peerid every time, useful for testing
+        config: {
+          Addresses: {
+            Swarm: [
+              "/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
+              "/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
+            ],
+          },
+        },
+      });
       ipfsRef.current = ipfs;
       setNodeActive(true);
-      const { cid } = await ipfs.add("Some Magic Data");
-      console.info(cid.toString());
-      // QmXXY5ZxbtuYj6DnfApLiGstzPN7fvSyigrRee3hDWPCaf
     })();
     return () => {
       if (ipfsRef.current) {
@@ -76,17 +84,23 @@ export const Viewport = (): JSX.Element => {
   const onSave = useCallback(async () => {
     console.log("onSave");
     if (ipfsRef.current) {
-      const { cid } = await ipfsRef.current.add("Some Magic Data");
+      const { cid } = await ipfsRef.current.add(testStr);
       setSaveDataCid(cid.toString());
       console.info(cid.toString());
     }
-  }, []);
+  }, [testStr]);
 
   return (
     <div className="flex flex-col w-full h-full overflow-hidden">
       <div className="z-10 absolute flex flex-col">
         <div className="flex flex-col m-4 p-4 min-w-max rounded-xl bg-dark text-light bg-opacity-90 shadow-lg">
           <div>IPFS Node {nodeActive ? "✅" : "⚠️"}</div>
+          <input
+            className="p-2 m-2 font-artifakt bg-light text-dark shadow-lg"
+            type="text"
+            value={testStr}
+            onChange={(e) => setTestStr(e.target.value)}
+          />
           <div className="flex flex-row mt-2">
             <input
               className="p-2 m-2 font-artifakt bg-light text-dark shadow-lg"

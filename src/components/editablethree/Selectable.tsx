@@ -19,6 +19,7 @@ export const Selectable = ({
       children?.props.position.y ?? 0,
       children?.props.position.z ?? 0
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

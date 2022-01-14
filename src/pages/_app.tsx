@@ -13,7 +13,7 @@ import "../styles/globals.css";
 const queryClient = new QueryClient();
 
 const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
-  const [session] = useState<Session | undefined>({
+  const [session, setSession] = useState<Session | undefined>({
     userPubKey: "0x000000042",
   });
   return (
@@ -24,7 +24,7 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
       <QueryClientProvider client={queryClient}>
         <div className="flex flex-col h-screen w-screen">
           <div className="flex-shrink">
-            <TopNav session={session} />
+            <TopNav session={session} setSession={setSession} />
           </div>
           <div className="bg-light h-full">
             {session && <Component {...pageProps} />}

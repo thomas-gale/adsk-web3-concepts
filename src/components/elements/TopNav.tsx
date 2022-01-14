@@ -4,12 +4,14 @@ import { useRouter } from "next/router";
 import { config } from "../../env/config";
 import { Session } from "../../types/web3/Session";
 import { Button } from "./Button";
+import { Identity } from "./Identity";
 
 export interface TopNavProps {
   session: Session | undefined;
+  setSession: (session: Session | undefined) => void;
 }
 
-export const TopNav = ({ session }: TopNavProps): JSX.Element => {
+export const TopNav = ({ session, setSession }: TopNavProps): JSX.Element => {
   const router = useRouter();
 
   return (
@@ -28,30 +30,7 @@ export const TopNav = ({ session }: TopNavProps): JSX.Element => {
         </Button>
       </div>
       <div className="flex-grow" />
-      <div className="m-2 flex flex-row items-center">
-        {!session && (
-          <Button
-            mode="dark"
-            className="mx-2"
-            onClick={async (): Promise<void> =>
-              console.log("Linking with Metamask wallet...")
-            }
-          >
-            Connect Wallet
-          </Button>
-        )}
-        {session && (
-          <Button
-            mode="dark"
-            className="mx-2 "
-            onClick={async (): Promise<void> =>
-              console.log("Unlinking with Metamask wallet...")
-            }
-          >
-            Disconnect Wallet
-          </Button>
-        )}
-      </div>
+      <Identity session={session} setSession={setSession} />
     </div>
   );
 };

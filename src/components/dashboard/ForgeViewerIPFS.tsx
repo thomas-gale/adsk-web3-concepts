@@ -21,10 +21,7 @@ export const ForgeViewerIPFS = (): JSX.Element => {
 
   const loadModel = useCallback(() => {
     if (viewer.current) {
-      viewer.current.loadModel(
-        config.api.forge.viewer.examples.gearboxGltf,
-        {}
-      );
+      viewer.current.loadModel(config.ipfs.gateway.exampleGearboxGltf, {});
     }
   }, []);
 
@@ -34,9 +31,7 @@ export const ForgeViewerIPFS = (): JSX.Element => {
         <div className="p-1 m-1">
           <div>
             Gearbox data (currently un-encrypted) stored on IPFS through{" "}
-            <a href="https://gateway.pinata.cloud/ipfs/Qmaz3RP6BVNNJVPvEFSRjpXyGx6cxwFHHyJUKtX8Ue4r2b">
-              gateway
-            </a>
+            <a href={config.ipfs.gateway.exampleDir}>gateway</a>
             <Button mode="light" className="m-1" onClick={loadModel}>
               Load Model
             </Button>

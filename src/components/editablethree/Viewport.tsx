@@ -11,6 +11,7 @@ import { Editor } from "./Editor";
 import { SceneState } from "../../types/editablethree/SceneState";
 import { Button } from "../elements/Button";
 import * as IPFS from "ipfs-core";
+import { config } from "../../env/config";
 
 export const Viewport = (): JSX.Element => {
   const ipfsRef = useRef<IPFS.IPFS>();
@@ -46,11 +47,7 @@ export const Viewport = (): JSX.Element => {
         repo: "adsk-web3-concepts", // should this be somehow related to the user metamask public key?
         config: {
           Addresses: {
-            Swarm: [
-              // This are a public webrtc-star servers
-              "/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
-              "/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
-            ],
+            Swarm: [config.ipfs.webRtcStarServer],
           },
         },
       });

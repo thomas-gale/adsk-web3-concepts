@@ -68,10 +68,10 @@ export const Viewport = (): JSX.Element => {
       });
 
       // Show Peer ID
-      if (ipfsRef.current) {
-        const id = await ipfsRef.current.id();
-        console.log("IPFS ID:", id);
-      }
+      // if (ipfsRef.current) {
+      //   const id = await ipfsRef.current.id();
+      //   console.log("IPFS ID:", id);
+      // }
 
       // Create OrbitDB instance
       orbitDbRef.current = await OrbitDB.createInstance(ipfsRef.current);
@@ -84,10 +84,25 @@ export const Viewport = (): JSX.Element => {
       });
       console.log(kvDbRef.current.address.toString());
 
-      // Log replication status change
+      // Db events logged
       kvDbRef.current.events.on("replicated", (address) => {
-        console.log("Replicated to", address);
+        console.log("Db replicated (push)", address);
       });
+
+      kvDbRef.current.events.on("replicate", (address) => {
+        console.log("Db replicate (pull)", address);
+      });
+
+      kvDbRef.current.events.on("ready", (dbname, heads) => {
+        console.log("Db ready", dbname, heads);
+      });
+
+      kvDbRef.current.events.on("peer", (peer) => {
+        console.log("Db peer connected", peer);
+      });
+
+      // Where to add this?
+      setNodeActive(true);
 
       // const ipfs = await IPFS.create({
       //   repo: "ok" + Math.random(), // random so we get a new peerid every time, useful for testing
@@ -186,12 +201,12 @@ export const Viewport = (): JSX.Element => {
       //     new TextEncoder().encode(`hello from ${id.id}`)
       //   );
       // }, 2000);
-      if (ipfsRef.current) {
-        while ((await ipfsRef.current.swarm.peers()).length === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-        setNodeActive(true);
-      }
+      // if (ipfsRef.current) {
+      //   while ((await ipfsRef.current.swarm.peers()).length === 0) {
+      //     await new Promise((resolve) => setTimeout(resolve, 1000));
+      //   }
+      //   setNodeActive(true);
+      // }
     })();
     return () => {
       if (kvDbRef.current) {

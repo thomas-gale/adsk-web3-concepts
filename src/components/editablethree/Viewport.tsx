@@ -19,7 +19,7 @@ import KeyValueStore from "orbit-db-kvstore";
 // import * as IPFS from "ipfs";
 // import * as IPFS from "ipfs-core";
 // import * as OrbitDB from "orbit-db";
-import { Message } from "ipfs-core-types/src/pubsub";
+// import { Message } from "ipfs-core-types/src/pubsub";
 
 export const Viewport = (): JSX.Element => {
   const ipfsRef = useRef<IPFS.IPFS>();
@@ -57,7 +57,7 @@ export const Viewport = (): JSX.Element => {
       // Orbit DB experiments
 
       ipfsRef.current = await IPFS.create({
-        repo: "orbit-test",
+        repo: "peer" + Math.random(), // Testing, this node is new peer on each mount
         config: {
           Addresses: {
             Swarm: [config.ipfs.webRtcStarServer],
@@ -66,14 +66,22 @@ export const Viewport = (): JSX.Element => {
         },
       });
 
+      // Show Peer ID
+      if (ipfsRef.current) {
+        const id = await ipfsRef.current.id();
+        console.log("IPFS ID:", id);
+      }
+
       // Create OrbitDB instance
       orbitDbRef.current = await OrbitDB.createInstance(ipfsRef.current);
 
       // Create database instance
-      kvDbRef.current = await orbitDbRef.current.keyvalue<string>("scene-db");
+      kvDbRef.current = await orbitDbRef.current.keyvalue<string>("scenekv", {
+        accessController: {
+          write: ["*"], // For testing any peer can write
+        },
+      });
       console.log(kvDbRef.current.address.toString());
-
-      setNodeActive(true);
 
       // const ipfs = await IPFS.create({
       //   repo: "ok" + Math.random(), // random so we get a new peerid every time, useful for testing
@@ -151,7 +159,9 @@ export const Viewport = (): JSX.Element => {
       // setInterval(function () {
       //   ipfs.pubsub.publish("announce-circuit", "peer-alive");
       // }, 15000);
+
       // Handshaking
+      // if (ipfsRef.current) {
       // ipfsRef.current.pubsub.subscribe("handshake", (message: Message) => {
       //   // Ignore from me
       //   if (message.from == id.id) return;
@@ -170,10 +180,12 @@ export const Viewport = (): JSX.Element => {
       //     new TextEncoder().encode(`hello from ${id.id}`)
       //   );
       // }, 2000);
-      // while ((await ipfsRef.current.swarm.peers()).length === 0) {
-      //   await new Promise((resolve) => setTimeout(resolve, 1000));
-      // }
-      // setNodeActive(true);
+      if (ipfsRef.current) {
+        while ((await ipfsRef.current.swarm.peers()).length === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+        setNodeActive(true);
+      }
     })();
     return () => {
       if (ipfsRef.current) {
@@ -188,22 +200,34 @@ export const Viewport = (): JSX.Element => {
   const onLoad = useCallback(async () => {
     if (ipfsRef.current) {
       setLoading(true);
-      const stream = ipfsRef.current.cat(loadDataCid);
-      let data = "";
-      for await (const chunk of stream) {
-        // chunks of data are returned as a Buffer, convert it back to a string
-        data += chunk.toString();
+      // const stream = ipfsRef.current.cat(loadDataCid);
+      // let data = "";
+      // for await (const chunk of stream) {
+      //   // chunks of data are returned as a Buffer, convert it back to a string
+      //   data += chunk.toString();
+      // }
+
+      // console.log("Setting database instance");
+
+      if (kvDbRef.current) {
+        console.log("Retriving state key");
+        const state = await kvDbRef.current.get("state");
+        console.log("Retrieved state!", state);
+        setSceneState(JSON.parse(state));
       }
-      setSceneState(JSON.parse(data));
+
       setLoading(false);
     }
   }, [loadDataCid]);
 
   const onSave = useCallback(async () => {
     if (ipfsRef.current) {
-      const { cid } = await ipfsRef.current.add(JSON.stringify(sceneState));
-      const pinnedCid = await ipfsRef.current.pin.add(cid);
-      setSaveDataCid(pinnedCid.toString());
+      // const { cid } = await ipfsRef.current.add(JSON.stringify(sceneState));
+      // const pinnedCid = await ipfsRef.current.pin.add(cid);
+      if (kvDbRef.current) {
+        await kvDbRef.current.put("state", JSON.stringify(sceneState));
+      }
+      // setSaveDataCid(pinnedCid.toString());
     }
   }, [sceneState]);
 

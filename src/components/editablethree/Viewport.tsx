@@ -84,6 +84,11 @@ export const Viewport = (): JSX.Element => {
       });
       console.log(kvDbRef.current.address.toString());
 
+      // Log replication status change
+      kvDbRef.current.events.on("replicated", (address) => {
+        console.log("Replicated to", address);
+      });
+
       // const ipfs = await IPFS.create({
       //   repo: "ok" + Math.random(), // random so we get a new peerid every time, useful for testing
       //   // repo: "adsk-web3-concepts", // should this be somehow related to the user metamask public key?
@@ -189,6 +194,12 @@ export const Viewport = (): JSX.Element => {
       }
     })();
     return () => {
+      if (kvDbRef.current) {
+        kvDbRef.current.close().catch((err) => console.log(err));
+      }
+      if (orbitDbRef.current) {
+        orbitDbRef.current.disconnect().catch((err) => console.log(err));
+      }
       if (ipfsRef.current) {
         ipfsRef.current
           .stop()
@@ -212,6 +223,7 @@ export const Viewport = (): JSX.Element => {
       if (kvDbRef.current) {
         setLoading(true);
         console.log("Retriving state...");
+        console.log("replication", kvDbRef.current.replicationStatus);
         const state = await kvDbRef.current.get("state");
         if (state) {
           console.log("Retrieved state!", state);
@@ -233,6 +245,7 @@ export const Viewport = (): JSX.Element => {
         await kvDbRef.current.put("state", JSON.stringify(sceneState), {
           pin: true,
         });
+        console.log("replication", kvDbRef.current.replicationStatus);
         console.log("Saved state!");
         setSaving(false);
       }

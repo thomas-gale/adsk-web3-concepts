@@ -49,13 +49,20 @@ export const Viewport = (): JSX.Element => {
         repo: "ok" + Math.random(), // random so we get a new peerid every time, useful for testing
         // repo: "adsk-web3-concepts", // should this be somehow related to the user metamask public key?
         config: {
+          // Identity: {
+          // PeerID: "peer" + Math.random(),
+          // PrivKey: "priv" + Math.random(),
+          // },
           Addresses: {
             Swarm: [config.ipfs.webRtcStarServer],
           },
           Bootstrap: [],
-          Routing: {
-            Type: "none",
-          },
+          // Bootstrap: [
+          //   "/ip4/127.0.0.1/tcp/44005/p2p/12D3KooWKaiCtkjaHEi747QpcxCp3co3Xqq34J1hH1vnW9vuQP2a",
+          // ],
+          // Routing: {
+          // Type: "none",
+          // },
         },
       });
       ipfsRef.current = ipfs;
@@ -127,15 +134,14 @@ export const Viewport = (): JSX.Element => {
       ipfsRef.current.pubsub.subscribe("handshake", (message: Message) => {
         // Ignore from me
         if (message.from == id.id) return;
-
         console.log("handshake from ", message.from);
-        if (ipfsRef.current) {
-          ipfsRef.current.swarm.peers().then((peers) => console.log(peers));
-          ipfsRef.current.swarm.addrs().then((addrs) => console.log(addrs));
-          // ipfsRef.current.swarm.connect(message.1);
-          // ipfsRef.current.pin.remote.service.add()
-          setNodeActive(true);
-        }
+        // if (ipfsRef.current) {
+        //   // ipfsRef.current.swarm.peers().then((peers) => console.log(peers));
+        //   ipfsRef.current.swarm.addrs().then((addrs) => console.log(addrs));
+        //   ipfsRef.current.swarm.connect(message.1);
+        //   ipfsRef.current.pin.remote.service.add()
+        //   setNodeActive(true);
+        // }
       });
       setInterval(function () {
         ipfs.pubsub.publish(
@@ -143,6 +149,12 @@ export const Viewport = (): JSX.Element => {
           new TextEncoder().encode(`hello from ${id.id}`)
         );
       }, 2000);
+
+      while ((await ipfsRef.current.swarm.peers()).length === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+
+      setNodeActive(true);
     })();
     return () => {
       if (ipfsRef.current) {

@@ -14,6 +14,7 @@ import { config } from "../../env/config";
 
 import * as IPFS from "ipfs";
 import OrbitDB from "orbit-db";
+import KeyValueStore from "orbit-db-kvstore";
 
 // import * as IPFS from "ipfs";
 // import * as IPFS from "ipfs-core";
@@ -23,6 +24,7 @@ import { Message } from "ipfs-core-types/src/pubsub";
 export const Viewport = (): JSX.Element => {
   const ipfsRef = useRef<IPFS.IPFS>();
   const orbitDbRef = useRef<OrbitDB>();
+  const kvDbRef = useRef<KeyValueStore<string>>(); // Always string key, we specify string value
   const [nodeActive, setNodeActive] = useState(false);
   const [loadDataCid, setLoadDataCid] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,16 +56,22 @@ export const Viewport = (): JSX.Element => {
     (async () => {
       // Orbit DB experiments
 
-      const ipfsOptions = { repo: "./ipfs" };
-      const ipfs = await IPFS.create(ipfsOptions);
+      ipfsRef.current = await IPFS.create({
+        repo: "orbit-test",
+        config: {
+          Addresses: {
+            Swarm: [config.ipfs.webRtcStarServer],
+          },
+          Bootstrap: [],
+        },
+      });
 
       // Create OrbitDB instance
-      const orbitdb = await OrbitDB.createInstance(ipfs);
+      orbitDbRef.current = await OrbitDB.createInstance(ipfsRef.current);
 
       // Create database instance
-      const db = await orbitdb.keyvalue("first-database");
-
-      console.log(db.address.toString());
+      kvDbRef.current = await orbitDbRef.current.keyvalue<string>("scene-db");
+      console.log(kvDbRef.current.address.toString());
 
       setNodeActive(true);
 

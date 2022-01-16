@@ -10,12 +10,19 @@ import { Loader } from "@react-three/drei";
 import { Editor } from "./Editor";
 import { SceneState } from "../../types/editablethree/SceneState";
 import { Button } from "../elements/Button";
-import * as IPFS from "ipfs-core";
 import { config } from "../../env/config";
+
+import * as IPFS from "ipfs";
+import OrbitDB from "orbit-db";
+
+// import * as IPFS from "ipfs";
+// import * as IPFS from "ipfs-core";
+// import * as OrbitDB from "orbit-db";
 import { Message } from "ipfs-core-types/src/pubsub";
 
 export const Viewport = (): JSX.Element => {
   const ipfsRef = useRef<IPFS.IPFS>();
+  const orbitDbRef = useRef<OrbitDB>();
   const [nodeActive, setNodeActive] = useState(false);
   const [loadDataCid, setLoadDataCid] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,35 +52,48 @@ export const Viewport = (): JSX.Element => {
 
   useEffect(() => {
     (async () => {
-      const ipfs = await IPFS.create({
-        repo: "ok" + Math.random(), // random so we get a new peerid every time, useful for testing
-        // repo: "adsk-web3-concepts", // should this be somehow related to the user metamask public key?
-        config: {
-          // Identity: {
-          // PeerID: "peer" + Math.random(),
-          // PrivKey: "priv" + Math.random(),
-          // },
-          Addresses: {
-            Swarm: [config.ipfs.webRtcStarServer],
-          },
-          Bootstrap: [],
-          // Bootstrap: [
-          //   "/ip4/127.0.0.1/tcp/44005/p2p/12D3KooWKaiCtkjaHEi747QpcxCp3co3Xqq34J1hH1vnW9vuQP2a",
-          // ],
-          // Routing: {
-          // Type: "none",
-          // },
-        },
-      });
-      ipfsRef.current = ipfs;
+      // Orbit DB experiments
 
+      const ipfsOptions = { repo: "./ipfs" };
+      const ipfs = await IPFS.create(ipfsOptions);
+
+      // Create OrbitDB instance
+      const orbitdb = await OrbitDB.createInstance(ipfs);
+
+      // Create database instance
+      const db = await orbitdb.keyvalue("first-database");
+
+      console.log(db.address.toString());
+
+      setNodeActive(true);
+
+      // const ipfs = await IPFS.create({
+      //   repo: "ok" + Math.random(), // random so we get a new peerid every time, useful for testing
+      //   // repo: "adsk-web3-concepts", // should this be somehow related to the user metamask public key?
+      //   config: {
+      //     // Identity: {
+      //     // PeerID: "peer" + Math.random(),
+      //     // PrivKey: "priv" + Math.random(),
+      //     // },
+      //     Addresses: {
+      //       Swarm: [config.ipfs.webRtcStarServer],
+      //     },
+      //     Bootstrap: [],
+      //     // Bootstrap: [
+      //     //   "/ip4/127.0.0.1/tcp/44005/p2p/12D3KooWKaiCtkjaHEi747QpcxCp3co3Xqq34J1hH1vnW9vuQP2a",
+      //     // ],
+      //     // Routing: {
+      //     // Type: "none",
+      //     // },
+      //   },
+      // });
+      // ipfsRef.current = ipfs;
       // console.log("stats bitswap", await ipfsRef.current.stats.bitswap());
       // console.log("stats repo", await ipfsRef.current.stats.repo());
-      const id = await ipfsRef.current.id();
-      console.log("ipfs id", id.id);
+      // const id = await ipfsRef.current.id();
+      // console.log("ipfs id", id.id);
       // console.log("peers", await ipfsRef.current.swarm.peers());
       // console.log("peer addrs", await ipfsRef.current.swarm.addrs());
-
       // processes a circuit-relay announce over pubsub
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       // const processAnnounce = async (addr: any) => {
@@ -81,18 +101,15 @@ export const Viewport = (): JSX.Element => {
       //   // get our peerid
       //   const me = await ipfs.id();
       //   // me = me.id;
-
       //   // not really an announcement if it's from us
       //   if (addr.from == me.id) {
       //     return;
       //   }
-
       //   // if we got a keep-alive, nothing to do
       //   if (addr == "keep-alive") {
       //     console.log(addr);
       //     return;
       //   }
-
       //   const peer = addr.split("/")[9];
       //   console.log("Peer: " + peer);
       //   console.log("Me: " + me);
@@ -100,7 +117,6 @@ export const Viewport = (): JSX.Element => {
       //     // return if the peer being announced is us
       //     return;
       //   }
-
       //   // get a list of peers
       //   const peers = await ipfs.swarm.peers();
       //   for (const i in peers) {
@@ -112,7 +128,6 @@ export const Viewport = (): JSX.Element => {
       //   }
       //   // log the address to console as we're about to attempt a connection
       //   console.log(addr);
-
       //   // connection almost always fails the first time, but almost always
       //   // succeeds the second time, so we do this:
       //   try {
@@ -122,39 +137,35 @@ export const Viewport = (): JSX.Element => {
       //     await ipfs.swarm.connect(addr);
       //   }
       // };
-
       // // process announcements over the relay network, and publish our own
       // // keep-alives to keep the channel alive
       // await ipfs.pubsub.subscribe("announce-circuit", processAnnounce);
       // setInterval(function () {
       //   ipfs.pubsub.publish("announce-circuit", "peer-alive");
       // }, 15000);
-
       // Handshaking
-      ipfsRef.current.pubsub.subscribe("handshake", (message: Message) => {
-        // Ignore from me
-        if (message.from == id.id) return;
-        console.log("handshake from ", message.from);
-        // if (ipfsRef.current) {
-        //   // ipfsRef.current.swarm.peers().then((peers) => console.log(peers));
-        //   ipfsRef.current.swarm.addrs().then((addrs) => console.log(addrs));
-        //   ipfsRef.current.swarm.connect(message.1);
-        //   ipfsRef.current.pin.remote.service.add()
-        //   setNodeActive(true);
-        // }
-      });
-      setInterval(function () {
-        ipfs.pubsub.publish(
-          "handshake",
-          new TextEncoder().encode(`hello from ${id.id}`)
-        );
-      }, 2000);
-
-      while ((await ipfsRef.current.swarm.peers()).length === 0) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-
-      setNodeActive(true);
+      // ipfsRef.current.pubsub.subscribe("handshake", (message: Message) => {
+      //   // Ignore from me
+      //   if (message.from == id.id) return;
+      //   console.log("handshake from ", message.from);
+      //   // if (ipfsRef.current) {
+      //   //   // ipfsRef.current.swarm.peers().then((peers) => console.log(peers));
+      //   //   ipfsRef.current.swarm.addrs().then((addrs) => console.log(addrs));
+      //   //   ipfsRef.current.swarm.connect(message.1);
+      //   //   ipfsRef.current.pin.remote.service.add()
+      //   //   setNodeActive(true);
+      //   // }
+      // });
+      // setInterval(function () {
+      //   ipfs.pubsub.publish(
+      //     "handshake",
+      //     new TextEncoder().encode(`hello from ${id.id}`)
+      //   );
+      // }, 2000);
+      // while ((await ipfsRef.current.swarm.peers()).length === 0) {
+      //   await new Promise((resolve) => setTimeout(resolve, 1000));
+      // }
+      // setNodeActive(true);
     })();
     return () => {
       if (ipfsRef.current) {

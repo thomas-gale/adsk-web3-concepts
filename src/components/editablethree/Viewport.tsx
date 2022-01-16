@@ -28,6 +28,7 @@ export const Viewport = (): JSX.Element => {
   const [nodeActive, setNodeActive] = useState(false);
   const [loadDataCid, setLoadDataCid] = useState("");
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [saveDataCid, setSaveDataCid] = useState("");
   const [sceneState, setSceneState] = useState({
     nodes: [
@@ -199,7 +200,6 @@ export const Viewport = (): JSX.Element => {
 
   const onLoad = useCallback(async () => {
     if (ipfsRef.current) {
-      setLoading(true);
       // const stream = ipfsRef.current.cat(loadDataCid);
       // let data = "";
       // for await (const chunk of stream) {
@@ -210,22 +210,31 @@ export const Viewport = (): JSX.Element => {
       // console.log("Setting database instance");
 
       if (kvDbRef.current) {
-        console.log("Retriving state key");
+        setLoading(true);
+        console.log("Retriving state...");
         const state = await kvDbRef.current.get("state");
-        console.log("Retrieved state!", state);
-        setSceneState(JSON.parse(state));
+        if (state) {
+          console.log("Retrieved state!", state);
+          setSceneState(JSON.parse(state));
+          setLoading(false);
+        } else {
+          console.error("No state found! Try again...?");
+        }
       }
-
-      setLoading(false);
     }
-  }, [loadDataCid]);
+  }, []);
 
   const onSave = useCallback(async () => {
     if (ipfsRef.current) {
       // const { cid } = await ipfsRef.current.add(JSON.stringify(sceneState));
       // const pinnedCid = await ipfsRef.current.pin.add(cid);
       if (kvDbRef.current) {
-        await kvDbRef.current.put("state", JSON.stringify(sceneState));
+        setSaving(true);
+        await kvDbRef.current.put("state", JSON.stringify(sceneState), {
+          pin: true,
+        });
+        console.log("Saved state!");
+        setSaving(false);
       }
       // setSaveDataCid(pinnedCid.toString());
     }
@@ -246,12 +255,13 @@ export const Viewport = (): JSX.Element => {
             <Button mode="light" className="mr-4" onClick={onLoad}>
               Load
             </Button>
-            <div>{loading ? "loading" : ""}</div>
+            <div>{loading ? "loading..." : ""}</div>
           </div>
           <div className="flex flex-row mt-2">
             <Button mode="light" onClick={onSave}>
               Save
             </Button>
+            <div>{saving ? "saving..." : ""}</div>
             <div className="ml-2 max-w-xs break-words">{saveDataCid}</div>
           </div>
         </div>

@@ -15,6 +15,7 @@ import { config } from "../../env/config";
 import * as IPFS from "ipfs";
 import OrbitDB from "orbit-db";
 import KeyValueStore from "orbit-db-kvstore";
+import { Message } from "ipfs-core-types/src/pubsub";
 
 // import * as IPFS from "ipfs";
 // import * as IPFS from "ipfs-core";
@@ -58,7 +59,9 @@ export const Viewport = (): JSX.Element => {
       // Orbit DB experiments
 
       ipfsRef.current = await IPFS.create({
-        repo: "peer" + Math.random(), // Testing, this node is new peer on each mount
+        // repo: "peer" + Math.random(), // Testing, this node is new peer on each mount
+        repo: "web3-concepts", // Testing, this node is new peer on each mount
+        preload: { enabled: false },
         config: {
           Addresses: {
             Swarm: [config.ipfs.webRtcStarServer],
@@ -77,16 +80,46 @@ export const Viewport = (): JSX.Element => {
       orbitDbRef.current = await OrbitDB.createInstance(ipfsRef.current);
 
       // Create database instance
-      kvDbRef.current = await orbitDbRef.current.keyvalue<string>("scenekv", {
+      // kvDbRef.current = (await orbitDbRef.current.open("scenekv", {
+      //   create: true,
+      //   type: "keyvalue",
+      //   // accessController: {
+      //   //   write: ["*"], // For testing any peer can write
+      //   // },
+      // })) as KeyValueStore<string>;
+
+      kvDbRef.current = await orbitDbRef.current.keyvalue("scenekv", {
         accessController: {
           write: ["*"], // For testing any peer can write
         },
       });
+
+      // Loading db
+      await kvDbRef.current.load();
       console.log(kvDbRef.current.address.toString());
 
+      // Set initial state
+      const dbState = await kvDbRef.current.get("scene");
+      if (dbState) {
+        setSceneState(JSON.parse(dbState));
+        console.log("Loaded initial scene state");
+      }
+
       // Db events logged
-      kvDbRef.current.events.on("replicated", (address) => {
+      kvDbRef.current.events.on("replicated", async (address) => {
         console.log("Db replicated (push)", address);
+        if (kvDbRef.current) {
+          setLoading(true);
+          console.log("Retriving state...");
+          const state = await kvDbRef.current.get("state");
+          if (state) {
+            console.log("Retrieved state!", state);
+            setSceneState(JSON.parse(state));
+            setLoading(false);
+          } else {
+            console.error("No state found! Try again...?");
+          }
+        }
       });
 
       kvDbRef.current.events.on("replicate", (address) => {
@@ -97,8 +130,20 @@ export const Viewport = (): JSX.Element => {
         console.log("Db ready", dbname, heads);
       });
 
-      kvDbRef.current.events.on("peer", (peer) => {
+      kvDbRef.current.events.on("peer", async (peer) => {
         console.log("Db peer connected", peer);
+        if (kvDbRef.current) {
+          setLoading(true);
+          console.log("Retriving state...");
+          const state = await kvDbRef.current.get("state");
+          if (state) {
+            console.log("Retrieved state!", state);
+            setSceneState(JSON.parse(state));
+            setLoading(false);
+          } else {
+            console.error("No state found! Try again...?");
+          }
+        }
       });
 
       // Where to add this?
@@ -181,26 +226,35 @@ export const Viewport = (): JSX.Element => {
       //   ipfs.pubsub.publish("announce-circuit", "peer-alive");
       // }, 15000);
 
+      let id = "";
+      if (ipfsRef.current) {
+        id = (await ipfsRef.current.id()).id;
+      }
+
       // Handshaking
-      // if (ipfsRef.current) {
-      // ipfsRef.current.pubsub.subscribe("handshake", (message: Message) => {
-      //   // Ignore from me
-      //   if (message.from == id.id) return;
-      //   console.log("handshake from ", message.from);
-      //   // if (ipfsRef.current) {
-      //   //   // ipfsRef.current.swarm.peers().then((peers) => console.log(peers));
-      //   //   ipfsRef.current.swarm.addrs().then((addrs) => console.log(addrs));
-      //   //   ipfsRef.current.swarm.connect(message.1);
-      //   //   ipfsRef.current.pin.remote.service.add()
-      //   //   setNodeActive(true);
-      //   // }
-      // });
-      // setInterval(function () {
-      //   ipfs.pubsub.publish(
-      //     "handshake",
-      //     new TextEncoder().encode(`hello from ${id.id}`)
-      //   );
-      // }, 2000);
+      if (ipfsRef.current) {
+        ipfsRef.current.pubsub.subscribe("handshake", (message: Message) => {
+          // Ignore from me
+
+          if (message.from == id) return;
+          console.log("handshake from ", message.from);
+          // if (ipfsRef.current) {
+          //   // ipfsRef.current.swarm.peers().then((peers) => console.log(peers));
+          //   ipfsRef.current.swarm.addrs().then((addrs) => console.log(addrs));
+          //   ipfsRef.current.swarm.connect(message.1);
+          //   ipfsRef.current.pin.remote.service.add()
+          //   setNodeActive(true);
+          // }
+        });
+      }
+      setInterval(function () {
+        if (ipfsRef.current) {
+          ipfsRef.current.pubsub.publish(
+            "handshake",
+            new TextEncoder().encode(`hello from ${id}`)
+          );
+        }
+      }, 2000);
       // if (ipfsRef.current) {
       //   while ((await ipfsRef.current.swarm.peers()).length === 0) {
       //     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -273,7 +327,7 @@ export const Viewport = (): JSX.Element => {
       <div className="z-10 absolute flex flex-col">
         <div className="flex flex-col m-4 p-4 min-w-max rounded-xl bg-dark text-light bg-opacity-90 shadow-lg">
           <div>IPFS Node {nodeActive ? "✅" : "⚠️"}</div>
-          <div className="flex flex-row mt-2">
+          {/* <div className="flex flex-row mt-2">
             <input
               className="p-2 m-2 font-artifakt bg-light text-dark shadow-lg"
               type="text"
@@ -284,13 +338,13 @@ export const Viewport = (): JSX.Element => {
               Load
             </Button>
             <div>{loading ? "loading..." : ""}</div>
-          </div>
+          </div> */}
           <div className="flex flex-row mt-2">
             <Button mode="light" onClick={onSave}>
               Save
             </Button>
             <div>{saving ? "saving..." : ""}</div>
-            <div className="ml-2 max-w-xs break-words">{saveDataCid}</div>
+            {/* <div className="ml-2 max-w-xs break-words">{saveDataCid}</div> */}
           </div>
         </div>
         <div className="flex flex-col mx-4 p-4 min-w-max rounded-xl bg-dark text-light bg-opacity-90 shadow-lg">

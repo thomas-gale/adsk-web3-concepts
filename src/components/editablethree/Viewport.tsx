@@ -15,8 +15,12 @@ import { config } from "../../env/config";
 import * as IPFS from "ipfs";
 import OrbitDB from "orbit-db";
 import KeyValueStore from "orbit-db-kvstore";
+import Identities, { Identity } from "orbit-db-identity-provider";
+import { useWeb3React } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
 
 export const Viewport = (): JSX.Element => {
+  const { connector, library } = useWeb3React<Web3Provider>();
   const ipfsRef = useRef<IPFS.IPFS>();
   const orbitDbRef = useRef<OrbitDB>();
   const kvDbRef = useRef<KeyValueStore<string>>(); // Always string key, we specify string value
@@ -69,13 +73,32 @@ export const Viewport = (): JSX.Element => {
         },
       });
 
+      // Create OrbitDB identity
+      let identity: Identity | undefined = undefined;
+      if (connector && library) {
+        // const provider = await connector?.getProvider();
+        // console.log("Library Provider:", library);
+        const wallet = library.getSigner();
+        console.log("Creating identity...");
+        identity = await Identities.createIdentity({
+          type: "ethereum",
+          wallet,
+        });
+        console.log("Created");
+      }
+
       // Create OrbitDB instance
-      orbitDbRef.current = await OrbitDB.createInstance(ipfsRef.current);
+      orbitDbRef.current = await OrbitDB.createInstance(ipfsRef.current, {
+        identity: identity,
+      });
+
+      // Log Identity
+      console.log("Orbit Identity", identity?.id);
 
       // Create Db instance
       kvDbRef.current = await orbitDbRef.current.keyvalue(kvDbBaseName, {
         accessController: {
-          write: ["*"], // For testing any peer can write
+          write: [identity?.id ?? ""], // For testing any peer can write
         },
       });
 
@@ -92,6 +115,12 @@ export const Viewport = (): JSX.Element => {
             console.log("Loaded existing scene state from local indexed db");
           }
         }
+
+        // // Log Identity
+        // if (orbitDbRef.current) {
+        //   console.log("Orbit ID", orbitDbRef.current.id);
+        // }
+
         // Node active and Db is ready
         setNodeActive(true);
       });
@@ -164,7 +193,7 @@ export const Viewport = (): JSX.Element => {
           .finally(() => setNodeActive(false));
       }
     };
-  }, []);
+  }, [connector, library]);
 
   const onSave = useCallback(async () => {
     if (ipfsRef.current) {

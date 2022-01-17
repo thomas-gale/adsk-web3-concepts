@@ -233,9 +233,9 @@
     to-fast-properties "^2.0.0"
 
 "@chainsafe/libp2p-noise@^5.0.0":
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/@chainsafe/libp2p-noise/-/libp2p-noise-5.0.1.tgz#78fddcd6c12a013b9c7ac643a1d21eab6ca6c47a"
-  integrity sha512-kYHUp37RFbh7o8kab6fhuvM8kQZvs4LYbLMmPBrQA/DNpAiJK4iflGDEGvNPy/niwEHO83xP0VguhH6jSiIUaA==
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@chainsafe/libp2p-noise/-/libp2p-noise-5.0.2.tgz#1fe7ae2cf453a9fbb2bd982b6941d6f866ed025f"
+  integrity sha512-hpxHl3bxHN2fgpmjP2zkC2Lq3ajA349WxI7U2aBuskkq3Pd+aUmSlVjM8pyN+5Dr5+yHuayqCgMUxq3AeOM7Zw==
   dependencies:
     "@stablelib/chacha20poly1305" "^1.0.1"
     "@stablelib/hkdf" "^1.0.1"
@@ -6029,11 +6029,10 @@ libp2p-gossipsub@^0.12.0:
     uint8arrays "^3.0.0"
 
 libp2p-interfaces@^2.0.1:
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/libp2p-interfaces/-/libp2p-interfaces-2.0.8.tgz#5013cc2f554d1c9f3b9756334bf8d7e5c3295c5d"
-  integrity sha512-y+WuWVaZ4YxzsM5xz5NyhKReKn2b4JsxGpXgMynw+D1Lj7Lu++aCqsn3w8C3sJk9eJj64SstUUXR5WHt1+zBaw==
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/libp2p-interfaces/-/libp2p-interfaces-2.0.9.tgz#ae3995a07ee885355972c02bc5359fd9f0c2c88f"
+  integrity sha512-KYPYBy7dprcc9cy9PdoJyljs//Gb7A1448jNl/egfxIETKZl4uvYK66l4lzLtKB3AblIxATB8BFWEY/ph86QIA==
   dependencies:
-    abort-controller "^3.0.0"
     abortable-iterator "^3.0.0"
     debug "^4.3.1"
     err-code "^3.0.1"

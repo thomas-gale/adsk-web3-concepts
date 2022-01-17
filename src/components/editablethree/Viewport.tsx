@@ -15,7 +15,6 @@ import { config } from "../../env/config";
 import * as IPFS from "ipfs";
 import OrbitDB from "orbit-db";
 import KeyValueStore from "orbit-db-kvstore";
-import { Message } from "ipfs-core-types/src/pubsub";
 
 export const Viewport = (): JSX.Element => {
   const ipfsRef = useRef<IPFS.IPFS>();
@@ -54,12 +53,18 @@ export const Viewport = (): JSX.Element => {
       ipfsRef.current = await IPFS.create({
         // repo: "peer" + Math.random(), // Testing, this node is new peer on each mount
         repo: "web3-concepts", // Testing, this node is new peer on each mount
-        preload: { enabled: false },
+        start: true,
+        preload: {
+          enabled: false,
+        },
+        EXPERIMENTAL: {
+          pubsub: true,
+        },
         config: {
           Addresses: {
             Swarm: [config.ipfs.webRtcStarServer],
           },
-          Bootstrap: [],
+          // Bootstrap: [],
         },
       });
 
@@ -74,11 +79,14 @@ export const Viewport = (): JSX.Element => {
       });
 
       // Set initial state
-      // const dbState = await kvDbRef.current.get("scene");
-      // if (dbState) {
-      //   setSceneState(JSON.parse(dbState));
-      //   console.log("Loaded initial scene state");
-      // }
+      const dbState = await kvDbRef.current.get("scene");
+      if (dbState) {
+        setSceneState(JSON.parse(dbState));
+        console.log("Loaded initial scene state");
+      }
+      setReplicationStatus(
+        `${kvDbRef.current.replicationStatus.progress}/${kvDbRef.current.replicationStatus.max}`
+      );
 
       // Db events log
       kvDbRef.current.events.on("load", async (dbname) => {
@@ -101,6 +109,8 @@ export const Viewport = (): JSX.Element => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         (address, hash, entry, progress, have) => {
           console.log("Db replication progress", progress);
+          console.log("Db replication have", have);
+          setReplicationStatus(`${progress}/${have}`);
         }
       );
 
@@ -108,7 +118,7 @@ export const Viewport = (): JSX.Element => {
         console.log("Db replicated with another peer! :)", address);
         if (kvDbRef.current) {
           setLoading(true);
-          console.log("Retriving state...");
+          console.log("Retrieving state...");
           const state = await kvDbRef.current.get("state");
           if (state) {
             console.log("Retrieved state!");
@@ -123,6 +133,28 @@ export const Viewport = (): JSX.Element => {
       kvDbRef.current.events.on("peer", async (peer) => {
         console.log("Db peer connected", peer);
       });
+
+      kvDbRef.current.events.on(
+        "peer.exchanged",
+        async (peer, address, heads) => {
+          console.log("peer.exchanged", peer, address, heads);
+          if (kvDbRef.current) {
+            setReplicationStatus(
+              `${kvDbRef.current.replicationStatus.progress}/${kvDbRef.current.replicationStatus.max}`
+            );
+            setLoading(true);
+            console.log("Retrieving state...");
+            const state = await kvDbRef.current.get("state");
+            if (state) {
+              console.log("Retrieved state!");
+              setSceneState(JSON.parse(state));
+              setLoading(false);
+            } else {
+              console.error("No state found! Try again...?");
+            }
+          }
+        }
+      );
 
       // Loading db
       await kvDbRef.current.load();
@@ -198,6 +230,9 @@ export const Viewport = (): JSX.Element => {
           pin: true,
         });
         console.log("replication", kvDbRef.current.replicationStatus);
+        setReplicationStatus(
+          `${kvDbRef.current.replicationStatus.progress}/${kvDbRef.current.replicationStatus.max}`
+        );
         console.log("Saved state!");
         setSaving(false);
       }
@@ -215,7 +250,7 @@ export const Viewport = (): JSX.Element => {
               Refresh
             </Button> */}
             <div>{loading ? "loading... " : ""}</div>
-            <div>{"replication: TODO"}</div>
+            <div>{`replication: ${replicationStatus}`}</div>
           </div>
           <div className="flex flex-row mt-2">
             <Button mode="light" onClick={onSave}>

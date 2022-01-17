@@ -53,12 +53,42 @@ export const Viewport = (): JSX.Element => {
     ],
   } as SceneState);
 
+  const load = useCallback(async () => {
+    if (kvDbRef.current) {
+      setLoading(true);
+      setReplicationStatus(
+        `${kvDbRef.current.replicationStatus.progress}/${kvDbRef.current.replicationStatus.max}`
+      );
+      const dbState = await kvDbRef.current.get(kvStateKey);
+      // Decrypt
+      if (dbState) {
+        setSceneState(JSON.parse(dbState));
+        setLoading(false);
+      }
+    }
+  }, []);
+
+  const onSave = useCallback(async () => {
+    if (kvDbRef.current) {
+      setSaving(true);
+
+      // Encrypt
+
+      await kvDbRef.current.put(kvStateKey, JSON.stringify(sceneState), {
+        pin: true,
+      });
+      setReplicationStatus(
+        `${kvDbRef.current.replicationStatus.progress}/${kvDbRef.current.replicationStatus.max}`
+      );
+      setSaving(false);
+    }
+  }, [sceneState]);
+
   useEffect(() => {
     (async () => {
       // Orbit DB experiments
       ipfsRef.current = await IPFS.create({
-        // repo: "peer" + Math.random(), // Testing, this node is new peer on each mount
-        repo: "web3-concepts", // Fixed peer id.
+        repo: "web3-concepts",
         start: true,
         preload: {
           enabled: false,
@@ -105,21 +135,7 @@ export const Viewport = (): JSX.Element => {
       // Subscribe to changes
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       kvDbRef.current.events.on("ready", async (dbname, heads) => {
-        if (kvDbRef.current) {
-          setReplicationStatus(
-            `${kvDbRef.current.replicationStatus.progress}/${kvDbRef.current.replicationStatus.max}`
-          );
-          const dbState = await kvDbRef.current.get(kvStateKey);
-          if (dbState) {
-            setSceneState(JSON.parse(dbState));
-            console.log("Loaded existing scene state from local indexed db");
-          }
-        }
-
-        // // Log Identity
-        // if (orbitDbRef.current) {
-        //   console.log("Orbit ID", orbitDbRef.current.id);
-        // }
+        await load();
 
         // Node active and Db is ready
         setNodeActive(true);
@@ -135,18 +151,7 @@ export const Viewport = (): JSX.Element => {
 
       kvDbRef.current.events.on("replicated", async (address) => {
         console.log("Db replicated with another peer! :)", address);
-        if (kvDbRef.current) {
-          setLoading(true);
-          console.log("Retrieving state...");
-          const state = await kvDbRef.current.get(kvStateKey);
-          if (state) {
-            console.log("Retrieved state!");
-            setSceneState(JSON.parse(state));
-            setLoading(false);
-          } else {
-            console.error("No state found! Try again...?");
-          }
-        }
+        await load();
       });
 
       kvDbRef.current.events.on("peer", async (peer) => {
@@ -157,21 +162,7 @@ export const Viewport = (): JSX.Element => {
         "peer.exchanged",
         async (peer, address, heads) => {
           console.log("peer.exchanged", peer, address, heads);
-          if (kvDbRef.current) {
-            setReplicationStatus(
-              `${kvDbRef.current.replicationStatus.progress}/${kvDbRef.current.replicationStatus.max}`
-            );
-            setLoading(true);
-            console.log("Retrieving state...");
-            const state = await kvDbRef.current.get(kvStateKey);
-            if (state) {
-              console.log("Retrieved state!");
-              setSceneState(JSON.parse(state));
-              setLoading(false);
-            } else {
-              console.error("No state found! Try again...?");
-            }
-          }
+          await load();
         }
       );
 
@@ -193,24 +184,7 @@ export const Viewport = (): JSX.Element => {
           .finally(() => setNodeActive(false));
       }
     };
-  }, [connector, library]);
-
-  const onSave = useCallback(async () => {
-    if (ipfsRef.current) {
-      if (kvDbRef.current) {
-        setSaving(true);
-        await kvDbRef.current.put(kvStateKey, JSON.stringify(sceneState), {
-          pin: true,
-        });
-        console.log("replication", kvDbRef.current.replicationStatus);
-        setReplicationStatus(
-          `${kvDbRef.current.replicationStatus.progress}/${kvDbRef.current.replicationStatus.max}`
-        );
-        console.log("Saved state!");
-        setSaving(false);
-      }
-    }
-  }, [sceneState]);
+  }, [connector, library, load]);
 
   return (
     <div className="flex flex-col w-full h-full overflow-hidden">

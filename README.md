@@ -4,9 +4,6 @@ An experimental look at how web3 based technologies could interface with Autodes
 Deployed on fleek https://tiny-silence-5016.on.fleek.co/
 
 ## IPFS/OrbitDb P2P Browser Notes
-- Keep your browser tab's active (e.g. disable brave/chrome discards)
-- `brave://discards/` (toggle auto-discard off for localhost/deployed page url)
-  
 - Wipe db data (brave/chrome)
 - `brave://settings/siteData?searchSubpage=localhost&search=clear`
 

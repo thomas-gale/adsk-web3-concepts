@@ -20,6 +20,8 @@ export const Viewport = (): JSX.Element => {
   const ipfsRef = useRef<IPFS.IPFS>();
   const orbitDbRef = useRef<OrbitDB>();
   const kvDbRef = useRef<KeyValueStore<string>>(); // Always string key, we specify string value
+  const kvDbBaseName = "scenekv";
+  const kvStateKey = "state";
   const [nodeActive, setNodeActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [replicationStatus, setReplicationStatus] = useState("");
@@ -71,44 +73,33 @@ export const Viewport = (): JSX.Element => {
       orbitDbRef.current = await OrbitDB.createInstance(ipfsRef.current);
 
       // Create Db instance
-      kvDbRef.current = await orbitDbRef.current.keyvalue("scenekv", {
+      kvDbRef.current = await orbitDbRef.current.keyvalue(kvDbBaseName, {
         accessController: {
           write: ["*"], // For testing any peer can write
         },
       });
 
-      // Set initial state
-      const dbState = await kvDbRef.current.get("scene");
-      if (dbState) {
-        setSceneState(JSON.parse(dbState));
-        console.log("Loaded initial scene state");
-      }
-      setReplicationStatus(
-        `${kvDbRef.current.replicationStatus.progress}/${kvDbRef.current.replicationStatus.max}`
-      );
-
-      // Db events log
-      kvDbRef.current.events.on("load", async (dbname) => {
-        console.log("Loaded db: " + dbname);
+      // Subscribe to changes
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      kvDbRef.current.events.on("ready", async (dbname, heads) => {
         if (kvDbRef.current) {
-          const dbState = await kvDbRef.current.get("scene");
+          setReplicationStatus(
+            `${kvDbRef.current.replicationStatus.progress}/${kvDbRef.current.replicationStatus.max}`
+          );
+          const dbState = await kvDbRef.current.get(kvStateKey);
           if (dbState) {
             setSceneState(JSON.parse(dbState));
-            console.log("Loaded initial scene state");
+            console.log("Loaded existing scene state from local indexed db");
           }
         }
-      });
-
-      kvDbRef.current.events.on("replicate", (address) => {
-        console.log("Db about to replicate with peer", address);
+        // Node active and Db is ready
+        setNodeActive(true);
       });
 
       kvDbRef.current.events.on(
         "replicate.progress",
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         (address, hash, entry, progress, have) => {
-          console.log("Db replication progress", progress);
-          console.log("Db replication have", have);
           setReplicationStatus(`${progress}/${have}`);
         }
       );
@@ -118,7 +109,7 @@ export const Viewport = (): JSX.Element => {
         if (kvDbRef.current) {
           setLoading(true);
           console.log("Retrieving state...");
-          const state = await kvDbRef.current.get("state");
+          const state = await kvDbRef.current.get(kvStateKey);
           if (state) {
             console.log("Retrieved state!");
             setSceneState(JSON.parse(state));
@@ -143,7 +134,7 @@ export const Viewport = (): JSX.Element => {
             );
             setLoading(true);
             console.log("Retrieving state...");
-            const state = await kvDbRef.current.get("state");
+            const state = await kvDbRef.current.get(kvStateKey);
             if (state) {
               console.log("Retrieved state!");
               setSceneState(JSON.parse(state));
@@ -157,10 +148,6 @@ export const Viewport = (): JSX.Element => {
 
       // Loading db
       await kvDbRef.current.load();
-      console.log(kvDbRef.current.address.toString());
-
-      // Node active
-      setNodeActive(true);
     })();
     // Clean-up
     return () => {
@@ -183,7 +170,7 @@ export const Viewport = (): JSX.Element => {
     if (ipfsRef.current) {
       if (kvDbRef.current) {
         setSaving(true);
-        await kvDbRef.current.put("state", JSON.stringify(sceneState), {
+        await kvDbRef.current.put(kvStateKey, JSON.stringify(sceneState), {
           pin: true,
         });
         console.log("replication", kvDbRef.current.replicationStatus);

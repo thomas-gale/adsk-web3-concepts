@@ -52,7 +52,7 @@ export const Viewport = (): JSX.Element => {
       // Orbit DB experiments
       ipfsRef.current = await IPFS.create({
         // repo: "peer" + Math.random(), // Testing, this node is new peer on each mount
-        repo: "web3-concepts", // Testing, this node is new peer on each mount
+        repo: "web3-concepts", // Fixed peer id.
         start: true,
         preload: {
           enabled: false,
@@ -64,7 +64,6 @@ export const Viewport = (): JSX.Element => {
           Addresses: {
             Swarm: [config.ipfs.webRtcStarServer],
           },
-          // Bootstrap: [],
         },
       });
 
@@ -160,30 +159,10 @@ export const Viewport = (): JSX.Element => {
       await kvDbRef.current.load();
       console.log(kvDbRef.current.address.toString());
 
-      // Node Id
-      // let id = "";
-      // if (ipfsRef.current) {
-      //   id = (await ipfsRef.current.id()).id;
-      // }
-
-      // Handshaking
-      // if (ipfsRef.current) {
-      //   ipfsRef.current.pubsub.subscribe("handshake", (message: Message) => {
-      //     // Ignore from me
-
-      //     if (message.from == id) return;
-      //     console.log("handshake from ", message.from);
-      //   });
-      // }
-      // setInterval(function () {
-      //   if (ipfsRef.current) {
-      //     ipfsRef.current.pubsub.publish(
-      //       "handshake",
-      //       new TextEncoder().encode(`hello from ${id}`)
-      //     );
-      //   }
-      // }, 2000);
+      // Node active
+      setNodeActive(true);
     })();
+    // Clean-up
     return () => {
       if (kvDbRef.current) {
         kvDbRef.current.close().catch((err) => console.log(err));
@@ -200,30 +179,8 @@ export const Viewport = (): JSX.Element => {
     };
   }, []);
 
-  // const onRefresh = useCallback(async () => {
-  //   if (ipfsRef.current) {
-  //     if (orbitDbRef.current) {
-  //       if (kvDbRef.current) {
-  //         setLoading(true);
-  //         console.log("Refreshing state...");
-  //         console.log("Replication status", kvDbRef.current.replicationStatus);
-  //         // const state = await kvDbRef.current.get("state");
-  //         // if (state) {
-  //         //   console.log("Retrieved state!");
-  //         //   setSceneState(JSON.parse(state));
-  //         //   setLoading(false);
-  //         // } else {
-  //         //   console.error("No state found! Try again...?");
-  //         // }
-  //       }
-  //     }
-  //   }
-  // }, []);
-
   const onSave = useCallback(async () => {
     if (ipfsRef.current) {
-      // const { cid } = await ipfsRef.current.add(JSON.stringify(sceneState));
-      // const pinnedCid = await ipfsRef.current.pin.add(cid);
       if (kvDbRef.current) {
         setSaving(true);
         await kvDbRef.current.put("state", JSON.stringify(sceneState), {
@@ -236,7 +193,6 @@ export const Viewport = (): JSX.Element => {
         console.log("Saved state!");
         setSaving(false);
       }
-      // setSaveDataCid(pinnedCid.toString());
     }
   }, [sceneState]);
 
@@ -246,9 +202,6 @@ export const Viewport = (): JSX.Element => {
         <div className="flex flex-col m-4 p-4 min-w-max rounded-xl bg-dark text-light bg-opacity-90 shadow-lg">
           <div>IPFS Node {nodeActive ? "✅" : "⚠️"}</div>
           <div className="flex flex-row mt-2">
-            {/* <Button mode="light" className="mr-4" onClick={onRefresh}>
-              Refresh
-            </Button> */}
             <div>{loading ? "loading... " : ""}</div>
             <div>{`replication: ${replicationStatus}`}</div>
           </div>
